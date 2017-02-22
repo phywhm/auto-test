@@ -1,0 +1,59 @@
+div.step_success {
+    background-color:green;
+    font-weight:bold;
+    font-size:16px;
+    margin-left:40px;
+    border-style:solid;
+    border-width:1px;
+}
+div.step_fail {
+    margin-left:40px;
+    background-color:red;
+    font-weight:bold;
+    font-size:16px;
+    border-style:solid;
+    border-width:1px;
+}
+div.step_skip {
+    background-color:dodgerblue;
+    font-weight:bold;
+    font-size:16px;
+    margin-left:40px;
+    border-style:solid;
+    border-width:1px;
+}
+div.feature_fail {
+    background-color:red;
+    font-weight:bold;
+    font-size:20px;
+    border-style:inset;
+    border-width:5px;
+}
+div.feature_success {
+    background-color:green;
+    font-weight:bold;
+    font-size:20px;
+    border-style:inset;
+    border-width:5px;
+}
+div.scenario_fail {
+    margin-left:20px;
+    background-color:red;
+    font-weight:bold;
+    font-size:18px;
+    border-style:groove;
+    border-width:3px;
+}
+div.scenario_success {
+    margin-left:20px;
+    background-color:green;
+    font-weight:bold;
+    font-size:18px;
+    border-style:groove;
+    border-width:3px;
+}
+div.trace_log {
+    background-color: #dddddd;
+    font-size:14px;
+    margin-left:60px;
+}
