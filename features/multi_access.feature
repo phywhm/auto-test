@@ -34,7 +34,7 @@ Feature: multi-access key
 
 
 
-  Scenario: the request get the instance by priority
+  Scenario: the different access key in the different queue
     Given I registry an user with "xiamatest" access key
     Given I update the instance limit to 502 and count to 500 on "xiamatest" access key
     Then I change the max instance of paas to "1"
@@ -56,7 +56,7 @@ Feature: multi-access key
 
 
 
-  Scenario: the request get the instance by priority
+  Scenario: one blocked access will not block another
     Given I registry an user with "xiamatest" access key
     Given I update the instance limit to 502 and count to 500 on "xiamatest" access key
     Given I request a "random" app

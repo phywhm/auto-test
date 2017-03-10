@@ -146,6 +146,29 @@ def step_impl(context, pkg_name=None):
         context.scenario.instances.remove(context.scenario.current_instance)
 
 
+@step(u'I request a (?:"(?P<pkg_name>random|wrong|.*)" )?app with "(?P<route>.*)" route')
+def step_impl(context, route, pkg_name=None):
+    if pkg_name is None:
+        pkg_name = "tests.testset.asdf"
+    elif pkg_name == "random":
+        pkg_name = "tests.testset." + formatdata.random_str(5)
+    elif pkg_name == "wrong":
+        pkg_name = "noapp.package.name"
+    else:
+        pass
+
+    params = {"operation": "test.set.route", "routes": route}
+    common.run_request(context.mock_server, "POST", params)
+    context.scenario.current_instance = context.scenario.current_user.start_instance(pkg_name)
+
+    context.scenario.instances.append(context.scenario.current_instance)
+
+    if pkg_name.lower().startswith("noapp"):
+        context.scenario.deleted_instance = context.scenario.current_instance
+        context.scenario.deleted_instances.append(context.scenario.current_instance)
+        context.scenario.instances.remove(context.scenario.current_instance)
+
+
 @step(u'I request a (?:"(?P<pkg_name>random|wrong|.*)" )?app with "(?P<param>[0-9]+)" (?P<key>priority|time)')
 def step_impl(context, param, key, pkg_name=None):
     if pkg_name is None:

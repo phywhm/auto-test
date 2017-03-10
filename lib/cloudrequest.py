@@ -17,7 +17,7 @@ from countly import CloudCountly
 from countly import pre_events
 from countly import process_event
 import xtestlogger
-from cloud_config import get_ctoken_backdoor
+import random
 
 
 logger = xtestlogger.get_logger(__name__)
@@ -66,6 +66,7 @@ class CloudRequest(object):
         self.device_id = formatdata.random_str(32)
 
         self.url = "http://" + CONFIG.SAAS_HOST + ":" + CONFIG.SAAS_PORT + '/s/rest/api'
+        print self.url
         self.status = INSTANCE_NOT_REQUEST
         if self.access_key is not None:
             self.client.accessKeyID = self.access_key
@@ -73,10 +74,10 @@ class CloudRequest(object):
 
         self.registry_sdk(**kargs)
 
-    def __clould_request(self, params):
+    def __clould_request(self, params, header={}):
         try:
             params = encryption.encrypt_cloud_request(params, self.secret_key)
-            return common.run_request(self.url, method="POST", commparams=params)
+            return common.run_request(self.url, method="POST", commparams=params, options=header)
         except Exception as e:
             raise CloudRequestException("Fail Action: %s; Reason: %s" % (inspect.stack()[1][3], e.message))
 
@@ -96,11 +97,16 @@ class CloudRequest(object):
         if 'os_type' in kargs:
             self.sdk_type = int(kargs['os_type'])
         else:
-            self.sdk_type = formatdata.random_int(1, 5)
+            #self.sdk_type = formatdata.random_int(1, 5)
+            self.sdk_type = random.choice((2, 3))
 
         # generate the  request body
         params = requests.generate_comm_request(ACTION_DID_REGISTER, self.sdk_type, self.protocol)
-        self.device = requests.generate_device_info(self.sdk_type)
+        if 'client_ip' in kargs:
+            self.device = requests.generate_device_info(self.sdk_type, kargs['client_ip'])
+        else:
+            self.device = requests.generate_device_info(self.sdk_type)
+
         params.device = self.device
         params.client = self.client
         params.data.type = self.sdk_type
@@ -138,6 +144,7 @@ class CloudRequest(object):
 
     def get_cid(self, package_name):
         params = requests.generate_comm_request(ACTION_CID, self.sdk_type, self.protocol, self.did)
+        params.device = self.device
         params.client = self.client
         params.data.userInfo = self.user_info
         params.data.pkgName = package_name
@@ -169,6 +176,7 @@ class CloudRequest(object):
             self.priority = kargs['priority']
         if 'confirm' not in kargs:
             kargs['confirm'] = 0
+
         kargs['sign'] = self.sign
         kargs['clientType'] = self.sdk_type
         kargs['cid'] = self.cid
@@ -178,9 +186,14 @@ class CloudRequest(object):
         # if 'resolution' not in kargs: kargs['resolution'] = 1
 
         self.data = requests.generate_data_info(**kargs)
+        params.device = self.device
         params.data = self.data
 
-        status, respone = self.__clould_request(params)
+        if 'client_ip' in kargs:
+            options = {'X-Forwarded-For': kargs['client_ip']}
+        else:
+            options = {}
+        status, respone = self.__clould_request(params, options)
         res = json.loads(respone)
         self.__cloud_json_check(res)
 

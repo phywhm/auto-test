@@ -2,6 +2,7 @@ Feature: test the feature on the queue
 """
     make sure all kinds of release can change the queue status
 """
+    @smoke
     Scenario Outline: notifying error status will change the status of queue when limit le real instance count
         Given I registry an user with "xiamatest" access key
         Given I update the instance limit to 501 and count to 500 on "xiamatest" access key

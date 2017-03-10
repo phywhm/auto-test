@@ -57,3 +57,71 @@ div.trace_log {
     font-size:14px;
     margin-left:60px;
 }
+
+.scenario {
+    border: 1px solid #ccc;
+}
+
+.step {
+    border: 1px dashed #ccc;
+}
+
+.children {
+    display: none;
+    margin-left: 1.4em;
+}
+
+/* Containers */
+.feature, #errors {
+    border: 1px solid #ccc;
+    padding: 0.3em 0.2em;
+    margin: 0.2em 0;
+}
+
+.fail {
+    color: #f33 !important;
+    font-weight: bold;
+}
+.pass {
+    color: #393 !important;
+}
+.label {
+    padding: 2px 5px;
+    font-size: 0.75em;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    color: black;
+    background-color: #ddd;
+    border-radius: 3px;
+}
+.label.debug, .label.trace, .label.error, .label.keyword {
+    letter-spacing: 0;
+}
+.label.error, .label.fail, .label.pass, .label.warn {
+    color: #fff !important;
+    font-weight: bold;
+}
+.label.error, .label.fail {
+    background-color: #d9534f;
+}
+.label.pass {
+    background-color: #5cb85c;
+}
+
+.label.skip {
+    background-color: dodgerblue;
+}
+.label.warn {
+    background-color: #ec971f;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 0.75em;
+}
+
+.elapsed {
+    float: right;
+    color: #999;
+    padding-left: 1em;
+}

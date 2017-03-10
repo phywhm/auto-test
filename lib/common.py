@@ -16,6 +16,7 @@ def run_request(url, method, commparams={}, options={}):
     if options == {}:
         header = {'Accept': 'application/json', 'Content-Type': 'application/Text'}
     else:
+        header = options
         if not options.has_key("accept"):
             header['Accept'] = 'application/json'
         else:

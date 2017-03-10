@@ -31,6 +31,6 @@ class CloudUser(object):
 if __name__ == "__main__":
     #8F3BB845AD4   9599e53c
     clouduser01 = CloudUser('cpd125212773', '029694a0fafac97c5435a1a97a909222', "9599e53c")
-    clouduser01.start_instance("com.netease.stzb.haima", False, resolution=4)
-    time.sleep(3000)
+    clouduser01.start_instance("com.netease.stzb.haima", False, resolution=4, client_ip='192.168.2.11')
+    time.sleep(30)
     clouduser01.stop_instances()

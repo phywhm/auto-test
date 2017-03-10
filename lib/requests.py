@@ -77,16 +77,20 @@ def generate_action_info(action_type, sdk_type, protocol, did):
 def generate_client_info():
     client_info = ClientInfo()
     client_info.sdkVersion = "2.2.test"
-    client_info.channel = 222222222
+    client_info.channel = 0222222222
     client_info.accessKeyID = DEFAULT_ACCESS_KEY
     return client_info
 
 
-def generate_device_info(sdk_type):
+def generate_device_info(sdk_type, client_ip=None):
     device_info = DeviceInfo()
-    device_info.ip = formatdata.random_ip()
+    if client_ip:
+        device_info.ip = client_ip
+    else:
+        device_info.ip = formatdata.random_ip()
     if sdk_type == TYPE_WEB:
         device_info.webInfo = generate_web_info()
+        device_info.screenInfo = generate_screen_info()
         device_info.networkType = ""
         device_info.isWifi = ""
     if sdk_type == TYPE_ANDROID:

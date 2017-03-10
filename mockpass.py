@@ -19,12 +19,14 @@ CALL_BACK_TIME = formatdata.random_int(1000, 1500)
 
 CUSTROM_MAX_INSTACNE = None
 CUSTROM_CALLBACK_TIME = None
+DEFAULT_ROUTE = "6,3"
 
 
 class MockHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         global CUSTROM_MAX_INSTACNE
         global CUSTROM_CALLBACK_TIME
+        global DEFAULT_ROUTE
         max_instance = MAX_INSTANCE_NUM if CUSTROM_MAX_INSTACNE is None else CUSTROM_MAX_INSTACNE
         self.response = {"operation": "com.haima.cloudplayer.controller.instance.apply", "code": 1000, "message": "ok",
                          "memo": "operation successfully"}
@@ -34,6 +36,9 @@ class MockHandler(BaseHTTPRequestHandler):
         print datas
         if datas['operation'] == "com.haima.cloudplayer.controller.instance.apply":
             serviceId = int(datas['param']['cidInfo']['info'].split(',')[0])
+            if datas['param']['flagIfIds'] != "0":
+                serviceId =  datas['param']['flagIfIds'].split(',')[0] + "-" + datas['param']['cidInfo']['info'].split(',')[0]
+
             pkg_name = datas['param']['packageName']
             if pkg_name.lower().startswith("noapp"):
                 self.response['response'] = {'code': 0, 'success': False, 'serviceId': None, 'state': 'NoAppInfoFound'}
@@ -47,8 +52,12 @@ class MockHandler(BaseHTTPRequestHandler):
                     t.start()
         elif datas['operation'] == "com.haima.cloudplayer.controller.instance.release":
             self.response['operation'] = "com.haima.cloudplayer.controller.instance.release"
+
             if datas['param'] in que:
-                que.remove(int(datas['param']))
+                try:
+                    que.remove(int(datas['param']))
+                except:
+                    que.remove(datas['param'])
 
         elif datas['operation'] == "com.haima.cloudplayer.controller.instance.refreshSToken":
             self.response['operation'] = "com.haima.cloudplayer.controller.instance.refreshSToken"
@@ -62,11 +71,16 @@ class MockHandler(BaseHTTPRequestHandler):
             serviceId = datas['param']['serviceId']
             t = threading.Thread(target=self.notify_instance, args=(serviceId, "31"))
             t.start()
+        elif datas['operation'] == "com.haima.cloudplayer.controller.router.getInterface":
+            self.response['operation'] = 'com.haima.cloudplayer.controller.router.getInterface'
+            self.response['response'] = {"flagIfIds": DEFAULT_ROUTE}
         elif datas['operation'] == "test.change.params":
             if 'max_num' in datas:
                 CUSTROM_MAX_INSTACNE = int(datas['max_num'])
             if 'callback_interval' in datas:
                 CUSTROM_CALLBACK_TIME = int(datas['callback_interval'])
+        elif datas['operation'] == "test.set.route":
+            DEFAULT_ROUTE = datas['routes']
         elif datas['operation'] == "test.unset.params":
             CUSTROM_MAX_INSTACNE = None
             CUSTROM_CALLBACK_TIME = None
