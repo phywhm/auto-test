@@ -159,6 +159,7 @@ def step_impl(context, route, pkg_name=None):
 
     params = {"operation": "test.set.route", "routes": route}
     common.run_request(context.mock_server, "POST", params)
+
     context.scenario.current_instance = context.scenario.current_user.start_instance(pkg_name)
 
     context.scenario.instances.append(context.scenario.current_instance)
@@ -167,6 +168,10 @@ def step_impl(context, route, pkg_name=None):
         context.scenario.deleted_instance = context.scenario.current_instance
         context.scenario.deleted_instances.append(context.scenario.current_instance)
         context.scenario.instances.remove(context.scenario.current_instance)
+
+    time.sleep(10)
+    params = {"operation": "test.unset.route", "routes": route}
+    common.run_request(context.mock_server, "POST", params)
 
 
 @step(u'I request a (?:"(?P<pkg_name>random|wrong|.*)" )?app with "(?P<param>[0-9]+)" (?P<key>priority|time)')

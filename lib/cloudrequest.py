@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import configuration as CONFIG
-import requests
+import clouddata
 from untils import formatdata
 import json
 import threading
@@ -37,6 +37,18 @@ class WebSocketException(Exception):
         self.message = msg
 
 
+
+class CloudStatus(object):
+    __slots__ = ['success', 'waiting', 'instance', 'release', 'status']
+
+    def __init__(self):
+        self.success = True
+        self.waiting = False
+        self.instance = False
+        self.release = None
+        self.status = INSTANCE_NOT_REQUEST
+
+
 class CloudRequest(object):
     def __init__(self, cloud_user, countly=False, **kargs):
         reload(CONFIG)
@@ -48,10 +60,10 @@ class CloudRequest(object):
         self.socket_url = None
         self.secret_key = None
         self.device = None
-        self.client = requests.generate_client_info()
+        self.client = clouddata.generate_client_info()
         self.data = None
         self.socket = None
-        self.countly = countly
+        self.countly = False
         self.cloud_countly = None
         self.extra_id = None
         self.ctoken_backdoor = 'abcd'
@@ -64,10 +76,10 @@ class CloudRequest(object):
         self.messages = []
         self.timer = None
         self.device_id = formatdata.random_str(32)
+        self.cloud_status = CloudStatus()
 
         self.url = "http://" + CONFIG.SAAS_HOST + ":" + CONFIG.SAAS_PORT + '/s/rest/api'
         print self.url
-        self.status = INSTANCE_NOT_REQUEST
         if self.access_key is not None:
             self.client.accessKeyID = self.access_key
 
@@ -89,7 +101,7 @@ class CloudRequest(object):
                 msg = "cid-%s Fail Action: %s; Reason: %s" % (self.cid, inspect.stack()[1][3], res['msg'])
             raise RequestParamException(msg)
         else:
-            res = requests.convert_dict(res)
+            res = clouddata.convert_dict(res)
             res = encryption.decrypt_cloud_response(res, self.secret_key)
             return res
 
@@ -101,11 +113,11 @@ class CloudRequest(object):
             self.sdk_type = random.choice((2, 3))
 
         # generate the  request body
-        params = requests.generate_comm_request(ACTION_DID_REGISTER, self.sdk_type, self.protocol)
+        params = clouddata.generate_comm_request(ACTION_DID_REGISTER, self.sdk_type, self.protocol)
         if 'client_ip' in kargs:
-            self.device = requests.generate_device_info(self.sdk_type, kargs['client_ip'])
+            self.device = clouddata.generate_device_info(self.sdk_type, kargs['client_ip'])
         else:
-            self.device = requests.generate_device_info(self.sdk_type)
+            self.device = clouddata.generate_device_info(self.sdk_type)
 
         params.device = self.device
         params.client = self.client
@@ -125,17 +137,17 @@ class CloudRequest(object):
         self.did = res['data']['did']
 
     def get_config(self):
-        params = requests.generate_comm_request(ACTION_GET_CONFIGURE, self.sdk_type, self.protocol, self.did)
+        params = clouddata.generate_comm_request(ACTION_GET_CONFIGURE, self.sdk_type, self.protocol, self.did)
         params.data.accessKeyID = self.access_key
 
         status, respone = self.__clould_request(params)
         res = json.loads(respone)
         res = self.__cloud_json_check(res)
+        self.extra_id = "{serial},{device},{game},{channel}".format(serial=formatdata.random_str(32),
+                                                                    device=self.device_id,
+                                                                    game=formatdata.random_str(6, '12345567890'),
+                                                                    channel=self.client.channel)
         if self.countly:
-            self.extra_id = "{serial},{device},{game},{channel}".format(serial=formatdata.random_str(32),
-                                                                        device=self.device_id,
-                                                                        game=formatdata.random_str(6, '12345567890'),
-                                                                        channel=self.client.channel)
             self.cloud_countly = CloudCountly("http://172.16.2.77", "8f1680f2ab51d0a0db291277080c9c46ab6ab638",
                                               self.device_id, self.sdk_type)
         #print res['data']['setDataInfo']
@@ -143,7 +155,7 @@ class CloudRequest(object):
         return res['data']
 
     def get_cid(self, package_name):
-        params = requests.generate_comm_request(ACTION_CID, self.sdk_type, self.protocol, self.did)
+        params = clouddata.generate_comm_request(ACTION_CID, self.sdk_type, self.protocol, self.did)
         params.device = self.device
         params.client = self.client
         params.data.userInfo = self.user_info
@@ -164,8 +176,7 @@ class CloudRequest(object):
             self.secret_key = res['data']['secretKey']
 
     def get_instance(self, **kargs):
-        logger.warning(kargs)
-        params = requests.generate_comm_request(ACTION_GET_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
+        params = clouddata.generate_comm_request(ACTION_GET_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
         if 'playingTime' not in kargs:
             kargs['playingTime'] = self.playing_time
         else:
@@ -185,7 +196,7 @@ class CloudRequest(object):
         # get cloud service can get the default resolution if data have no key
         # if 'resolution' not in kargs: kargs['resolution'] = 1
 
-        self.data = requests.generate_data_info(**kargs)
+        self.data = clouddata.generate_data_info(**kargs)
         params.device = self.device
         params.data = self.data
 
@@ -198,16 +209,17 @@ class CloudRequest(object):
         self.__cloud_json_check(res)
 
     def stop_instance(self):
-        params = requests.generate_comm_request(ACTION_STOP_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
+        params = clouddata.generate_comm_request(ACTION_STOP_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
         params.data.sign = self.sign
         params.data.cid = self.cid
         try:
-            if self.status  in [INSTANCE_IN_QUEUE, INSTANCE_SUCCESS_REQUEST, INSTANCE_DONE_REQUEST]:
+            if self.cloud_status.status  in [INSTANCE_IN_QUEUE, INSTANCE_SUCCESS_REQUEST, INSTANCE_DONE_REQUEST]:
+                self.cloud_status.release = 'stop'
                 logger.info("cid-{cid}  stop the instance".format(cid=self.cid))
                 status, respone = self.__clould_request(params)
                 res = json.loads(respone)
                 self.__cloud_json_check(res)
-                self.status = USER_STOP
+                self.cloud_status.status = USER_STOP
                 for instance in self.cloud_user.instances:
                     if instance.cid == self.cid:
                         self.cloud_user.instances.remove(instance)
@@ -220,11 +232,11 @@ class CloudRequest(object):
             logger.exception(e.message)
 
     def notify_instance(self, status):
-        if self.status == INSTANCE_DONE_REQUEST:
+        if self.cloud_status.status == INSTANCE_DONE_REQUEST:
             logger.info("cid-{cid} Notify the instance with status {status}".format(cid=self.cid, status=status))
-            params = requests.generate_comm_request(ACTION_PAAS_CALLBACK, self.sdk_type, self.protocol, self.did)
+            params = clouddata.generate_comm_request(ACTION_PAAS_CALLBACK, self.sdk_type, self.protocol, self.did)
             instance_id = CloudDB().get_instance_id_by_cid(self.cid)
-            params.data = requests.generate_instance_info(instance_id, status)
+            params.data = clouddata.generate_instance_info(instance_id, status)
             status, respone = self.__clould_request(params)
             res = json.loads(respone)
             self.__cloud_json_check(res)
@@ -233,7 +245,7 @@ class CloudRequest(object):
                     self.cloud_user.instances.remove(instance)
 
     def refresh_stoken(self):
-        params = requests.generate_comm_request(ACTION_GET_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
+        params = clouddata.generate_comm_request(ACTION_GET_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
         self.data.opType = 1
         params.data = self.data
         logger.info("cid-{cid}  Refresh the stoken".format(cid=self.cid))
@@ -246,7 +258,7 @@ class CloudRequest(object):
             logger.exception(e.message)
 
     def change_resolution(self, resolution="1"):
-        params = requests.generate_comm_request(ACTION_GET_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
+        params = clouddata.generate_comm_request(ACTION_GET_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
         self.data.opType = 2
         self.data.resolution = resolution
         params.data = self.data
@@ -284,7 +296,7 @@ class CloudRequest(object):
                 self.socket.ping()
                 time.sleep(5)
         except Exception:
-            logger.warning("cid-%s websocket broke down; instance status: %s" % (self.cid, self.status))
+            logger.warning("cid-%s websocket broke down; instance status: %s" % (self.cid, self.cloud_status.status))
         finally:
             self.socket.close()
 
@@ -295,33 +307,40 @@ class CloudRequest(object):
                 jsondata = json.loads(data)
                 operation = json.loads(jsondata['payload'])['operation']
                 self.messages.append(json.loads(jsondata['payload']))
-                logger.debug(jsondata)
+                logger.info(jsondata)
                 if operation == 6:
                     logger.info("cid-{cid}  Waiting for the instance".format(cid=self.cid))
+                    self.cloud_status.waiting = True
                     if auto_confirm:
                         self.get_instance(confirm=1)
-                    self.status = INSTANCE_IN_QUEUE
+                    self.cloud_status.status = INSTANCE_IN_QUEUE
                 if operation == 10:
-                    self.status = INSTANCE_SUCCESS_REQUEST
+                    self.cloud_status.instance = True
+                    self.cloud_status.status = INSTANCE_SUCCESS_REQUEST
                     logger.info("cid-{cid}  recieve the instance ID".format(cid=self.cid))
                     pass
                 if operation == 5:
-                    self.status = INSTANCE_DONE_REQUEST
+                    self.cloud_status.status = INSTANCE_DONE_REQUEST
                     logger.info("cid-{cid}  recieve the instance Address".format(cid=self.cid))
                     if self.countly:
                         self.timer = threading.Timer(0, process_event, args=(self.cloud_countly, self,))
                         self.timer.start()
                 if operation == 2:
                     logger.info("cid-{cid}  request is kicked".format(cid=self.cid))
-                    self.status = INSTANCE_KICKED
+                    self.cloud_status.release = 'kicked'
+                    self.cloud_status.status = INSTANCE_KICKED
                 if operation == 3:
                     logger.info("cid-{cid}  instance broke down".format(cid=self.cid))
-                    self.status = INSTANCE_SCRASH
+                    self.cloud_status.release = 'crash'
+                    self.cloud_status.status = INSTANCE_SCRASH
                 if operation == 4:
                     logger.info("cid-{cid}  playing time is over".format(cid=self.cid))
-                    self.status = INSTANCE_OVERTIME
+                    self.cloud_status.release = 'overtime'
+                    self.cloud_status.status = INSTANCE_OVERTIME
         except Exception:
-            logger.warning("cid-%s websocket broke down; instance status: %s" % (self.cid, self.status))
+            logger.warning("cid-%s websocket broke down; instance status: %s" % (self.cid, self.cloud_status.status))
+            logger.warning("cid-%s intance-status  %-15s%-15s%-15s%-15s" % (
+            self.cid, self.cloud_status.success, self.cloud_status.waiting, self.cloud_status.instance, self.cloud_status.release))
         finally:
             self.socket.close()
             if self.countly and self.timer is not None:
@@ -347,6 +366,9 @@ class CloudRequest(object):
             self.websocket_connect(auto_confirm, ping)
             self.get_instance(**kargs)
         except Exception as e:
+            if self.socket:
+                self.socket.close()
+            self.cloud_status.success = False
             logger.error("cid-%s Failed Action: startInstance" % (self.cid))
             logger.exception(e.message)
 

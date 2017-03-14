@@ -7,9 +7,9 @@ import sys
 import ConfigParser
 import argparse
 from lib.clouduser import CloudUser
-from lib.cloud_amqp import CloudAMQP
+from lib.cloudamqp import CloudAMQP
 import time
-from lib import cloud_tools
+from lib import cloudtools
 from lib.constants import *
 
 
@@ -59,9 +59,9 @@ def notify_message(args):
 
 def maintain_server(args):
     if args.type == "stop":
-        cloud_tools.stop_service(args.start_time, args.end_time)
+        cloudtools.stop_service(args.start_time, args.end_time)
     else:
-        cloud_tools.recover_server()
+        cloudtools.recover_server()
 
 
 lib_path = os.path.join(sys.path[0], "../lib")

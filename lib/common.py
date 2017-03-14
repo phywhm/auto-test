@@ -42,3 +42,6 @@ def run_request(url, method, commparams={}, options={}):
     return res.status, respone
 
 
+if __name__ == "__main__":
+    from constants import const
+    print const.TEST

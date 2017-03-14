@@ -74,11 +74,11 @@
     <title>behave testing result</title>
 </head>
 <body>	<div class="feature">
-	<span class="label pass">Feature:</span>
+	<span class="label fail">Feature:</span>
 	<span class="name">multi-access key</span>
 		<div class="children scenario" style="display: block;">
-			<span class="label pass">Scenario</span>
-			<span class="name">the request get the instance by priority</span>
+			<span class="label fail">Scenario</span>
+			<span class="name">The same access in the different routers</span>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
 				<span class="name">I registry an user with "xiamatest" access key</span>
@@ -89,7 +89,7 @@
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app with "1000" priority</span>
+				<span class="name">I request a "random" app with "2,4" route</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
@@ -97,199 +97,7 @@
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app with "1000" priority</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app with "1001" priority</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I registry an user with "xiamatest01" access key</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I update the instance limit to 501 and count to 500 on "xiamatest01" access key</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app with "1000" priority</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app with "1000" priority</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app with "10000" priority</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I switch to the "0th" user</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I try to stop the "0th" instance</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the status of instance should be "4"</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I try to stop the "0th" instance</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the status of instance should be "4"</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I switch to the "1th" user</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I try to stop the "0th" instance</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the status of instance should be "0"</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I try to stop the "0th" instance</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the status of instance should be "4"</span>
-			</div>
-		</div>
-		<div class="children scenario" style="display: block;">
-			<span class="label pass">Scenario</span>
-			<span class="name">the request get the instance by priority</span>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I registry an user with "xiamatest" access key</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I update the instance limit to 502 and count to 500 on "xiamatest" access key</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I change the max instance of paas to "1"</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the index of instance should be "2"</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I registry an user with "xiamatest01" access key</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the index of instance should be "2"</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I try to stop the "0th" instance</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the index of instance should be "2"</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I switch to the "0th" user</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the index of instance should be "1"</span>
-			</div>
-		</div>
-		<div class="children scenario" style="display: block;">
-			<span class="label pass">Scenario</span>
-			<span class="name">the request get the instance by priority</span>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I registry an user with "xiamatest" access key</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I update the instance limit to 502 and count to 500 on "xiamatest" access key</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
+				<span class="name">I request a "random" app with "2,4" route</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
@@ -297,27 +105,36 @@
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I registry an user with "xiamatest01" access key</span>
+				<span class="name">I request a "random" app with "3,4" route</span>
 			</div>
 			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
+				<span class="label fail">step:</span>
+				<span class="name">the index of instance should be "1"</span>
+				<div class="children lable error">[u'Assertion Failed: ', u'Expected: <1>', u'     but: was <2>', u'', u'Captured stdout:', u'http://saasauth-demo.haimawan.com:8081/s/rest/api', u'http://saasauth-demo.haimawan.com:8081/s/rest/api', u'http://saasauth-demo.haimawan.com:8081/s/rest/api', u'', u'Captured logging:', u'INFO:lib.cloudrequest:cid-84517  request the instance', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84517\', u\'type\': 2, u\'mid\': u\'1489491535253\', u\'payload\': u\'{"code":0,"operation":10}\'}', u'INFO:lib.cloudrequest:cid-84517  recieve the instance ID', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84517\', u\'type\': 2, u\'mid\': u\'1489491536259\', u\'payload\': u\'{"code":0,"data":{"audioUrl":"rtmp://192.168.212.1101935/publishlive/mystreamaudio?st=iTWds50QvUY3WUmyJr62SWWIYtaMuQdhpgKJimBcLWtOFh2QHZE60CWlmk2etYkd","countdownTime":60000,"inputUrl":"ws://192.168.212.110:7681/iTWds50QvUY3WUmyJr62SWWIYtaMuQdhpgKJimBcLWtOFh2QHZE60CWlmk2etYkd","playingTime":3000000,"remindTime":300000,"videoUrl":"rtmp://192.168.212.1101935/publishlive/mystream?st=iTWds50QvUY3WUmyJr62SWWIYtaMuQdhpgKJimBcLWtOFh2QHZE60CWlmk2etYkd"},"operation":5}\'}', u'INFO:lib.cloudrequest:cid-84517  recieve the instance Address', u'INFO:lib.cloudrequest:cid-84518  request the instance', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84518\', u\'type\': 2, u\'mid\': u\'1489491546345\', u\'payload\': u\'{"code":0,"data":{"index":1},"operation":6}\'}', u'INFO:lib.cloudrequest:cid-84518  Waiting for the instance', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84518\', u\'type\': 2, u\'mid\': u\'1489491546380\', u\'payload\': u\'{"code":0,"data":{"index":1,"time":"44","timeStr":"44\u79d2"},"operation":1}\'}', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84518\', u\'type\': 2, u\'mid\': u\'1489491560520\', u\'payload\': u\'{"code":0,"data":{"index":1,"time":"44","timeStr":"44\u79d2"},"operation":1}\'}', u'INFO:lib.cloudrequest:cid-84519  request the instance', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84519\', u\'type\': 2, u\'mid\': u\'1489491616523\', u\'payload\': u\'{"code":0,"data":{"index":1},"operation":6}\'}', u'INFO:lib.cloudrequest:cid-84519  Waiting for the instance', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84519\', u\'type\': 2, u\'mid\': u\'1489491616562\', u\'payload\': u\'{"code":0,"data":{"index":1,"time":"44","timeStr":"44\u79d2"},"operation":1}\'}', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84518\', u\'type\': 2, u\'mid\': u\'1489491620525\', u\'payload\': u\'{"code":0,"data":{"index":1,"time":"44","timeStr":"44\u79d2"},"operation":1}\'}', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84519\', u\'type\': 2, u\'mid\': u\'1489491620529\', u\'payload\': u\'{"code":0,"data":{"index":2,"time":"88","timeStr":"1\u5206\u949f28\u79d2"},"operation":1}\'}', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84518\', u\'type\': 2, u\'mid\': u\'1489491680535\', u\'payload\': u\'{"code":0,"data":{"index":1,"time":"44","timeStr":"44\u79d2"},"operation":1}\'}', u'INFO:lib.cloudrequest:{u\'ack\': 0, u\'to\': u\'84519\', u\'type\': 2, u\'mid\': u\'1489491680538\', u\'payload\': u\'{"code":0,"data":{"index":2,"time":"88","timeStr":"1\u5206\u949f28\u79d2"},"operation":1}\'}']</div>
 			</div>
 			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the status of instance should be "4"</span>
+				<span class="label skip">step:</span>
+				<span class="name">I request a "random" app with "2,4" route</span>
 			</div>
 			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
+				<span class="label skip">step:</span>
+				<span class="name">the index of instance should be "2"</span>
 			</div>
 			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
+				<span class="label skip">step:</span>
+				<span class="name">I request a "random" app with "4,4" route</span>
 			</div>
 			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
-				<span class="name">the status of instance should be "4"</span>
+				<span class="label skip">step:</span>
+				<span class="name">the index of instance should be "1"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label skip">step:</span>
+				<span class="name">I request a "random" app with "4,4" route</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label skip">step:</span>
+				<span class="name">the index of instance should be "2"</span>
 			</div>
 		</div>
 	</div>

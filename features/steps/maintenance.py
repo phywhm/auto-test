@@ -2,8 +2,8 @@
 #-*- coding: UTF-8 -*-
 
 from datetime import *
-from lib.cloud_tools import stop_service
-from lib.cloud_tools import recover_server
+from lib.cloudtools import stop_service
+from lib.cloudtools import recover_server
 
 
 @step(u'I send maintenance message for "{interval}" minutes in "{future}" minutes')

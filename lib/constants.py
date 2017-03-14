@@ -1,6 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
+"""
+__两个下划线表示私有
+_一个下划线表示保护, import的是不会被导入
+"""
+class _const:
+    class ConstError(TypeError):
+        pass
+
+    class ConstCaseError(ConstError):
+        pass
+
+    def __setattr__(self, key, value):
+        if self.__dict__.has_key(key):
+            raise self.ConstError, "Can not change const.{0}".format(key)
+        if not key.isupper():
+            raise  self.ConstCaseError, "const name {0} is not all upper".format(key)
+        self.__dict__[key] = value
+
+import sys
+sys.modules['const'] = _const()
+import const
+
+
+const.TEST = 2
 TYPE_WEB = 3
 TYPE_ANDROID = 2
 TYPE_IOS = 4

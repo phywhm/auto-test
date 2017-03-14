@@ -68,12 +68,12 @@ class ColorFormatter(logging.Formatter):
         else:
             return s
 
-def get_logger(name, file_log_leve=logging.DEBUG, console_log_level=logging.ERROR):
+def get_logger(name, file_name = '/tmp/testrun.log', file_log_leve=logging.INFO, console_log_level=logging.ERROR):
     xx_formater = logging.Formatter(fmt='%(asctime)s [%(threadName)s] %(filename)s:%(lineno)d %(levelname)s %(message)s',
                                     datefmt='%Y-%m-%d %H:%M:%S')
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
-    file_handler = logging.FileHandler(filename='/tmp/testrun.log',
+    file_handler = logging.FileHandler(filename=file_name,
                                       mode='a',
                                       encoding='utf-8')
     file_handler.setLevel(file_log_leve)

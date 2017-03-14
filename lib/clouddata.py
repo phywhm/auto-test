@@ -77,7 +77,7 @@ def generate_action_info(action_type, sdk_type, protocol, did):
 def generate_client_info():
     client_info = ClientInfo()
     client_info.sdkVersion = "2.2.test"
-    client_info.channel = 0222222222
+    client_info.channel = '00000222222222'
     client_info.accessKeyID = DEFAULT_ACCESS_KEY
     return client_info
 
