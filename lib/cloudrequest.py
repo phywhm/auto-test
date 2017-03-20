@@ -18,7 +18,10 @@ from countly import pre_events
 from countly import process_event
 import xtestlogger
 import random
-
+from datetime import datetime
+from cloudtimer import CloudTimer
+from cloudtimer import ActionTimer
+from rtmpclient import RTMPClient
 
 logger = xtestlogger.get_logger(__name__)
 
@@ -67,6 +70,7 @@ class CloudRequest(object):
         self.cloud_countly = None
         self.extra_id = None
         self.ctoken_backdoor = 'abcd'
+        self.player = None
 
         self.user_info = cloud_user.user_info
         self.access_key = cloud_user.access_key
@@ -77,19 +81,25 @@ class CloudRequest(object):
         self.timer = None
         self.device_id = formatdata.random_str(32)
         self.cloud_status = CloudStatus()
+        self.cloud_timer = CloudTimer()
 
         self.url = "http://" + CONFIG.SAAS_HOST + ":" + CONFIG.SAAS_PORT + '/s/rest/api'
-        print self.url
+        #print self.url
         if self.access_key is not None:
             self.client.accessKeyID = self.access_key
 
 
         self.registry_sdk(**kargs)
 
+
     def __clould_request(self, params, header={}):
         try:
             params = encryption.encrypt_cloud_request(params, self.secret_key)
-            return common.run_request(self.url, method="POST", commparams=params, options=header)
+            start_time = datetime.now()
+            response = common.run_request(self.url, method="POST", commparams=params, options=header)
+            end_time = datetime.now()
+            self.cloud_timer.add_action_timer(ActionTimer(inspect.stack()[1][3], start_time, end_time))
+            return response
         except Exception as e:
             raise CloudRequestException("Fail Action: %s; Reason: %s" % (inspect.stack()[1][3], e.message))
 
@@ -165,6 +175,7 @@ class CloudRequest(object):
         else:
             params.data.CToken = encryption.generate_ctoken(params)
         params.data.configInfo = formatdata.random_str(200)
+        params.data.extraId = self.extra_id
 
         status, respone = self.__clould_request(params)
         res = json.loads(respone)
@@ -223,6 +234,8 @@ class CloudRequest(object):
                 for instance in self.cloud_user.instances:
                     if instance.cid == self.cid:
                         self.cloud_user.instances.remove(instance)
+            if self.player:
+                self.player.close()
             if self.socket:
                 self.socket.close()
             if self.countly:
@@ -232,17 +245,22 @@ class CloudRequest(object):
             logger.exception(e.message)
 
     def notify_instance(self, status):
-        if self.cloud_status.status == INSTANCE_DONE_REQUEST:
-            logger.info("cid-{cid} Notify the instance with status {status}".format(cid=self.cid, status=status))
-            params = clouddata.generate_comm_request(ACTION_PAAS_CALLBACK, self.sdk_type, self.protocol, self.did)
-            instance_id = CloudDB().get_instance_id_by_cid(self.cid)
-            params.data = clouddata.generate_instance_info(instance_id, status)
-            status, respone = self.__clould_request(params)
-            res = json.loads(respone)
-            self.__cloud_json_check(res)
-            for instance in self.cloud_user.instances:
-                if instance.cid == self.cid:
-                    self.cloud_user.instances.remove(instance)
+        try:
+            if self.cloud_status.status == INSTANCE_DONE_REQUEST:
+                logger.info("cid-{cid} Notify the instance with status {status}".format(cid=self.cid, status=status))
+                params = clouddata.generate_comm_request(ACTION_PAAS_CALLBACK, self.sdk_type, self.protocol, self.did)
+                params.action.protocol = "0.1"
+                instance_id = CloudDB().get_instance_id_by_cid(self.cid)
+                params.data = clouddata.generate_instance_info(instance_id, status)
+                status, respone = self.__clould_request(params)
+                res = json.loads(respone)
+                self.__cloud_json_check(res)
+                for instance in self.cloud_user.instances:
+                    if instance.cid == self.cid:
+                        self.cloud_user.instances.remove(instance)
+        except Exception as e:
+            logger.exception("cid-%s Failed Action: stopInstance" %(self.cid))
+            logger.exception(e.message)
 
     def refresh_stoken(self):
         params = clouddata.generate_comm_request(ACTION_GET_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
@@ -292,17 +310,23 @@ class CloudRequest(object):
 
     def send_ping(self):
         try:
-            while True:
-                self.socket.ping()
-                time.sleep(5)
+            i = 0
+            while self.socket is not None:
+                i += 1
+                if i < 20:
+                    time.sleep(1)
+                else:
+                    i = 0
+                    self.socket.ping()
         except Exception:
             logger.warning("cid-%s websocket broke down; instance status: %s" % (self.cid, self.cloud_status.status))
         finally:
-            self.socket.close()
+            if self.socket:
+                self.socket.close()
 
     def recv_data(self, auto_confirm):
         try:
-            while True:
+            while self.socket is not None:
                 data = self.socket.recv()
                 jsondata = json.loads(data)
                 operation = json.loads(jsondata['payload'])['operation']
@@ -318,10 +342,24 @@ class CloudRequest(object):
                     self.cloud_status.instance = True
                     self.cloud_status.status = INSTANCE_SUCCESS_REQUEST
                     logger.info("cid-{cid}  recieve the instance ID".format(cid=self.cid))
+                    end_time = datetime.now()
+                    self.cloud_timer.add_action_timer(ActionTimer('got_instance', self.start_time, end_time))
                     pass
                 if operation == 5:
                     self.cloud_status.status = INSTANCE_DONE_REQUEST
                     logger.info("cid-{cid}  recieve the instance Address".format(cid=self.cid))
+                    end_time = datetime.now()
+                    self.cloud_timer.add_action_timer(ActionTimer('get_input', self.start_time, end_time))
+
+                    audio_url = json.loads(jsondata['payload'])['data']['audioUrl']
+                    video_url = json.loads(jsondata['payload'])['data']['videoUrl']
+                    stoken = json.loads(jsondata['payload'])['data']['sToken']
+                    if self.player:
+                        self.player.close()
+                    self.player = RTMPClient(audio_url, video_url, stoken)
+                    player = threading.Thread(target=self.player.recieve)
+                    player.setDaemon(False)
+                    player.start()
                     if self.countly:
                         self.timer = threading.Timer(0, process_event, args=(self.cloud_countly, self,))
                         self.timer.start()
@@ -329,20 +367,30 @@ class CloudRequest(object):
                     logger.info("cid-{cid}  request is kicked".format(cid=self.cid))
                     self.cloud_status.release = 'kicked'
                     self.cloud_status.status = INSTANCE_KICKED
+                    self.socket = None
+                    if self.player:
+                        self.player.close()
                 if operation == 3:
                     logger.info("cid-{cid}  instance broke down".format(cid=self.cid))
                     self.cloud_status.release = 'crash'
                     self.cloud_status.status = INSTANCE_SCRASH
+                    self.socket = None
+                    if self.player:
+                        self.player.close()
                 if operation == 4:
                     logger.info("cid-{cid}  playing time is over".format(cid=self.cid))
                     self.cloud_status.release = 'overtime'
                     self.cloud_status.status = INSTANCE_OVERTIME
+                    self.socket = None
+                    if self.player:
+                        self.player.close()
         except Exception:
             logger.warning("cid-%s websocket broke down; instance status: %s" % (self.cid, self.cloud_status.status))
             logger.warning("cid-%s intance-status  %-15s%-15s%-15s%-15s" % (
             self.cid, self.cloud_status.success, self.cloud_status.waiting, self.cloud_status.instance, self.cloud_status.release))
         finally:
-            self.socket.close()
+            if self.socket:
+                self.socket.close()
             if self.countly and self.timer is not None:
                 self.timer.cancel()
 
@@ -359,12 +407,15 @@ class CloudRequest(object):
 
         kargs['confirm'] = 0
         try:
+            self.start_time = datetime.now()
             self.get_config()
             if self.countly:
                 pre_events(self.cloud_countly, self)
             self.get_cid(kargs['pkgname'])
             self.websocket_connect(auto_confirm, ping)
             self.get_instance(**kargs)
+            end_time = datetime.now()
+            self.cloud_timer.add_action_timer(ActionTimer('all_request', self.start_time, end_time))
         except Exception as e:
             if self.socket:
                 self.socket.close()

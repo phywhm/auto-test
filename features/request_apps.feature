@@ -159,19 +159,6 @@ Feature: start and stop the instance
         Then the status of instance should be "0"
         And the instance should receive "waiting" message
         And the instance num of "xiamatest" should be "501"
-"""
-    Scenario: re-request the app when the status is 1
-        Given I registry an user with "xiamatest" access key
-        Then I change the max instance of paas to "1"
-        Given I request a "random" app
-        Then I wait "1000" ms
-        Given I request a "random" app
-        Then I wait "1000" ms
-        When I re-request the app again
-        Then the status of instance should be "0"
-        And the instance should receive "apply" message
-        And the instance num of "xiamatest" should be "501"
-"""
 
     Scenario: re-request the app when the status is 3
         Given I registry an user with "xiamatest" access key
@@ -193,3 +180,15 @@ Feature: start and stop the instance
         Then the status of instance should be "4"
         And the instance should receive "address" message
         And the instance num of "xiamatest" should be "501"
+
+
+    Scenario: cancel the request when the status is 0
+        Given I registry an user with "xiamatest" access key
+        Then I change the max instance of paas to "1"
+        #Given I update the instance limit to 501 and count to 500 on "xiamatest" access key
+        Given I request a "random" app
+        Then I wait "1000" ms
+        Given I request a "random" app
+        Then I wait "1000" ms
+        When I try to stop the "1th" instance
+        Then the instance num of "xiamatest" should be "501"

@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
+import xtestlogger
 from librtmp import RTMP
 import time
 
+logger = xtestlogger.get_logger(__name__)
+
 class RTMPClient():
-    def __init__(self, audio_url, video_url, stoken, output):
+    def __init__(self, audio_url, video_url, stoken):
         self.audio_url = audio_url
         self.video_url = video_url
         self.stoken = stoken
-        self.output = output
         self.audio_client = RTMP(self.audio_url, live=True, token=self.stoken)
         self.video_client = RTMP(self.video_url, live=True, token=self.stoken)
 
@@ -24,14 +26,18 @@ class RTMPClient():
 
 
 
-    def recieve(self, size=20480):
+    def recieve(self, size=1024):
         while self.continue_recieve:
             self.recieve_done = False
             audio_data = self.audio_stream.read(size)
             video_data = self.video_stream.read(size)
+            self.recieve_done = True
+            logger.info(len(video_data))
+            if len(video_data) == 0:
+                self.close()
             del audio_data
             del video_data
-            self.recieve_done = True
+
 
     def close(self):
         self.continue_recieve = False
