@@ -75,20 +75,16 @@
 </head>
 <body>	<div class="feature">
 	<span class="label pass">Feature:</span>
-	<span class="name">start and stop the instance</span>
+	<span class="name">all kinds of scenarios on Stoken</span>
 		<div class="children scenario" style="display: block;">
 			<span class="label pass">Scenario</span>
-			<span class="name">cancel the request when the status is 0</span>
+			<span class="name">refresh stoken when the status of instance is 4</span>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
 				<span class="name">I registry an user with "xiamatest" access key</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I change the max instance of paas to "1"</span>
-			</div>
-			<div class="children step" style="display: block;">
-				<span class="label pass">step:</span>
 				<span class="name">I request a "random" app</span>
 			</div>
 			<div class="children step" style="display: block;">
@@ -97,15 +93,19 @@
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
+				<span class="name">the status of instance should be "4"</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
+				<span class="name">I refresh the stoken of instance</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I try to stop the "1th" instance</span>
+				<span class="name">the status of instance should be "4"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the instance should receive "address" message</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>

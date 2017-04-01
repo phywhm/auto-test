@@ -135,7 +135,7 @@ Feature: all kinds of scenarios on resolution
     Given I registry an user with "xiamatest" access key
     When I request an "random" app with
       |    key     |      value    |
-      | push_resolution |      4        |
+      | resolution |      4        |
     Then the status of instance should be "4"
     Then the ID of resolution info should be "4"
     When I change the resolution of instance with the "1th" ID

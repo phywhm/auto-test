@@ -34,16 +34,7 @@ Feature: start and stop the instance
         And the instance num of "xiamatest" should be "default"
 
 
-    Scenario: request a game with playtime
-        Given I registry an user with "xiamatest" access key
-        Given I request a "random" app with "90000" time
-        And I wait "2000" ms
-        Then the instance should receive "address" message
-        Then the status of instance should be "4"
-        And the instance num of "xiamatest" should be "501"
-        And I wait "90000" ms for overtime
-        Then the instance should be deleted successfully
-        And the instance num of "xiamatest" should be "default"
+
 
     Scenario: stop the instance with 0 status in applying
         Given I registry an user with "xiamatest" access key
@@ -192,3 +183,70 @@ Feature: start and stop the instance
         Then I wait "1000" ms
         When I try to stop the "1th" instance
         Then the instance num of "xiamatest" should be "501"
+
+    @playing_time
+    Scenario: request a game with playtime and no global playing time
+        Given I registry an user with "xiamatest" access key
+        Given I request a "random" app with "90000" time
+        And I wait "2000" ms
+        Then the instance should receive "address" message
+        And I wait "60000" ms
+        Then the status of instance should be "4"
+        And the instance num of "xiamatest" should be "501"
+        And I wait "30000" ms for overtime
+        Then the instance should be deleted successfully
+        And the instance num of "xiamatest" should be "default"
+
+    @playing_time
+    Scenario: request a game when playtime gt global playing time
+        "set the global playing time to 60s"
+        Given I registry an user with "xiamatest" access key
+        Given I request a "random" app with "90000" time
+        And I wait "2000" ms
+        Then the instance should receive "address" message
+        And I wait "45000" ms
+        Then the status of instance should be "4"
+        And the instance num of "xiamatest" should be "501"
+        And I wait "15000" ms for overtime
+        Then the instance should be deleted successfully
+        And the instance num of "xiamatest" should be "default"
+
+    @playing_time
+    Scenario: request a game when playtime eq global playing time
+        "set the global playing time to 60s"
+        Given I registry an user with "xiamatest" access key
+        Given I request a "random" app with "60000" time
+        And I wait "2000" ms
+        Then the instance should receive "address" message
+        And I wait "45000" ms
+        Then the status of instance should be "4"
+        And the instance num of "xiamatest" should be "501"
+        And I wait "15000" ms for overtime
+        Then the instance should be deleted successfully
+        And the instance num of "xiamatest" should be "default"
+
+    @playing_time
+    Scenario: request a game when playtime lt global playing time
+        "set the global playing time to 60s"
+        Given I registry an user with "xiamatest" access key
+        Given I request a "random" app with "40000" time
+        And I wait "2000" ms
+        Then the instance should receive "address" message
+        Then the status of instance should be "4"
+        And the instance num of "xiamatest" should be "501"
+        And I wait "40000" ms for overtime
+        Then the instance should be deleted successfully
+        And the instance num of "xiamatest" should be "default"
+
+    @playing_time
+    Scenario: request a game when global playing time contains chars
+        "set the global playing time to '12312sf'"
+        Given I registry an user with "xiamatest" access key
+        Given I request a "random" app with "90000" time
+        And I wait "2000" ms
+        Then the instance should receive "address" message
+        Then the status of instance should be "4"
+        And the instance num of "xiamatest" should be "501"
+        And I wait "90000" ms for overtime
+        Then the instance should be deleted successfully
+        And the instance num of "xiamatest" should be "default"

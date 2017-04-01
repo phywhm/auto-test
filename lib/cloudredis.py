@@ -53,7 +53,7 @@ class CloudRedis(object):
 
 
 if __name__ == "__main__":
-    os.environ["REDIS_HOST"] = "172.16.2.16"
+    os.environ["REDIS_HOST"] = "172.16.2.90"
     cloud_redis = CloudRedis()
     #cloud_redis.set_wait_time()
     #cloud_redis.delete_keys("APP_GLOBAL_CONFIG*")

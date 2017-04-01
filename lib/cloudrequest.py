@@ -22,6 +22,7 @@ from datetime import datetime
 from cloudtimer import CloudTimer
 from cloudtimer import ActionTimer
 from rtmpclient import RTMPClient
+from websocket import WebSocketTimeoutException, WebSocketConnectionClosedException
 
 logger = xtestlogger.get_logger(__name__)
 
@@ -224,7 +225,7 @@ class CloudRequest(object):
         params.data.sign = self.sign
         params.data.cid = self.cid
         try:
-            if self.cloud_status.status  in [INSTANCE_IN_QUEUE, INSTANCE_SUCCESS_REQUEST, INSTANCE_DONE_REQUEST]:
+            if self.cloud_status.status in [INSTANCE_IN_QUEUE, INSTANCE_SUCCESS_REQUEST, INSTANCE_DONE_REQUEST]:
                 self.cloud_status.release = 'stop'
                 logger.info("cid-{cid}  stop the instance".format(cid=self.cid))
                 status, respone = self.__clould_request(params)
@@ -291,6 +292,7 @@ class CloudRequest(object):
 
     def __create_connection(self, url):
         self.socket = create_connection(url)
+        self.socket.settimeout(1)
 
     def websocket_connect(self, auto_confirm=True, ping=True):
         url = "%s/websocket?cid=%s&uid=%s&did=%s&appId=%s&sign=%s" \
@@ -300,12 +302,8 @@ class CloudRequest(object):
         t3.start()
         t3.join()
 
-        t2 = threading.Thread(target=self.recv_data, args=(auto_confirm,))
+        t2 = threading.Thread(target=self.recv_data, args=(auto_confirm, ping, ))
         t2.setDaemon(False)
-        if ping:
-            t1 = threading.Thread(target=self.send_ping)
-            t1.setDaemon(False)
-            t1.start()
         t2.start()
 
     def send_ping(self):
@@ -324,10 +322,19 @@ class CloudRequest(object):
             if self.socket:
                 self.socket.close()
 
-    def recv_data(self, auto_confirm):
+    def recv_data(self, auto_confirm, ping):
         try:
+            i = 0
             while self.socket is not None:
-                data = self.socket.recv()
+                i += 1
+                if i == 20:
+                    i = 0
+                    if ping:
+                        self.socket.ping()
+                try:
+                    data = self.socket.recv()
+                except Exception:
+                    continue
                 jsondata = json.loads(data)
                 operation = json.loads(jsondata['payload'])['operation']
                 self.messages.append(json.loads(jsondata['payload']))
@@ -351,15 +358,15 @@ class CloudRequest(object):
                     end_time = datetime.now()
                     self.cloud_timer.add_action_timer(ActionTimer('get_input', self.start_time, end_time))
 
-                    audio_url = json.loads(jsondata['payload'])['data']['audioUrl']
-                    video_url = json.loads(jsondata['payload'])['data']['videoUrl']
-                    stoken = json.loads(jsondata['payload'])['data']['sToken']
-                    if self.player:
-                        self.player.close()
-                    self.player = RTMPClient(audio_url, video_url, stoken)
-                    player = threading.Thread(target=self.player.recieve)
-                    player.setDaemon(False)
-                    player.start()
+                    #audio_url = json.loads(jsondata['payload'])['data']['audioUrl']
+                    #video_url = json.loads(jsondata['payload'])['data']['videoUrl']
+                    #stoken = json.loads(jsondata['payload'])['data']['sToken']
+                    #if self.player:
+                    #    self.player.close()
+                    #self.player = RTMPClient(audio_url, video_url, stoken)
+                    #player = threading.Thread(target=self.player.recieve)
+                    #player.setDaemon(False)
+                    #player.start()
                     if self.countly:
                         self.timer = threading.Timer(0, process_event, args=(self.cloud_countly, self,))
                         self.timer.start()
@@ -384,11 +391,14 @@ class CloudRequest(object):
                     self.socket = None
                     if self.player:
                         self.player.close()
-        except Exception:
-            logger.warning("cid-%s websocket broke down; instance status: %s" % (self.cid, self.cloud_status.status))
-            logger.warning("cid-%s intance-status  %-15s%-15s%-15s%-15s" % (
-            self.cid, self.cloud_status.success, self.cloud_status.waiting, self.cloud_status.instance, self.cloud_status.release))
+        except WebSocketConnectionClosedException:
+            logger.warning("cid-%s websocket disconnect from server; instance status: %s" % (self.cid, self.cloud_status.status))
+        except Exception as e:
+            logger.exception(e.message)
         finally:
+            logger.warning("cid-%s intance-status  %-15s%-15s%-15s%-15s" % (
+                self.cid, self.cloud_status.success, self.cloud_status.waiting, self.cloud_status.instance,
+                self.cloud_status.release))
             if self.socket:
                 self.socket.close()
             if self.countly and self.timer is not None:

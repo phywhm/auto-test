@@ -180,7 +180,7 @@ def step_impl(context, key, flag=None):
 
 
 @step(u'the instance should(?: (?P<flag>not))? contain "(?P<message_type>.*)" message(?: "(?P<count>[0-9]+)" times)?')
-def step_impl(context, message_type):
+def step_impl(context, flag, message_type, count):
     time.sleep(10)
     if context.scenario.current_instance not in context.scenario.instances:
         context.scenario.current_instance = context.scenario.instances[-1]
