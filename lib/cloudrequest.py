@@ -84,7 +84,7 @@ class CloudRequest(object):
         self.cloud_status = CloudStatus()
         self.cloud_timer = CloudTimer()
 
-        self.url = "http://" + CONFIG.SAAS_HOST + ":" + CONFIG.SAAS_PORT + '/s/rest/api'
+        self.url = "http://" + CONFIG.SAAS_HOST + ":" + CONFIG.SAAS_PORT + '/rest/api'
         #print self.url
         if self.access_key is not None:
             self.client.accessKeyID = self.access_key

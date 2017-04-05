@@ -47,12 +47,12 @@ def _get_config(p, section, key, env_var, default):
 
 
 p = load_config_file()
-SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "172.16.2.77")       #测试环境
+SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "localhost")       #测试环境
 #SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "172.16.2.100")        #demo
 #SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "172.16.2.169")    #支付
 #SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "saasauth-migu# .haimawan.com")  #teng dev
 #SAAS_HOST = "saasAuth-pre.haimawan.com"
-SAAS_PORT = _get_config(p, "cloudenv", 'saas_port', "SAAS_PORT", "8081")
+SAAS_PORT = _get_config(p, "cloudenv", 'saas_port', "SAAS_PORT", "8010")
 MESSAGE_DIR = "./message/"
 TEMPLATE_DIR = "templates/"
 DB_HOST = _get_config(p, "cloudenv", 'db_host', "DB_HOST", "172.16.2.16")  #testing
@@ -64,7 +64,7 @@ DB_PASSWD = _get_config(p, "cloudenv", 'db_passwd', "DB_PASSWD", "123qwe")
 MOCK_SERVER = _get_config(p, "cloudenv", 'mock_server', "MOCK_SERVER", "172.16.50.193")
 MOCK_PORT = _get_config(p, "cloudenv", 'mock_port', "MOCK_PORT", "8080")
   #version > 3.0, it will use the encrypted protocol
-PROTOCOL_VERSION = _get_config(p, 'cloudenv', 'protocol_version', "PROTOCOL_VERSION", "3.1")
+PROTOCOL_VERSION = _get_config(p, 'cloudenv', 'protocol_version', "PROTOCOL_VERSION", "1.1")
   #specify the secret key
 SECRET_KEY = _get_config(p, 'cloudenv', 'secret_key', 'SECRET_KEY', 'and0123456789012')
 PASS_DB = _get_config(p, "cloudenv", 'paas_db', "PASS_DB", "cloudplayer_controller_show") #测试环境
@@ -74,3 +74,5 @@ REDIS_PORT = _get_config(p, 'cloudenv', 'redis_port', "REDIS_PORT", 6379)
 REDIS_DB = _get_config(p, 'cloudenv', 'redis_db', "REDIS_DB", 0)
 REDIS_PASSWD = _get_config(p, 'cloudenv', 'redis_passwd', "REDIS_PASSWD", "123qwe")
 USE_CTOKEN_BACKDOOR = _get_config(p, 'cloudenv', 'use_ctoken_backdoor', "USE_CTOKEN_BACKDOOR", 0)
+
+

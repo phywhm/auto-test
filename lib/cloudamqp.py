@@ -7,9 +7,9 @@ import configuration as CONFIG
 from base.cloud_message import CloudMessage
 
 class CloudAMQP(object):
-    def __init__(self, host=None, port=5672, virtual_host="/", password="Hm_Rabbit"):
+    def __init__(self, host=None, port=5672, virtual_host="/", password="admin"):
         if host:
-            credential = pika.PlainCredentials("hm_rabbit", password)
+            credential = pika.PlainCredentials("admin", password)
             self.amqp_params = pika.ConnectionParameters(host=host, port=port, virtual_host=virtual_host,
                                                          credentials=credential)
         else:
@@ -28,6 +28,18 @@ class CloudAMQP(object):
         requeued_messages = channel.cancel()
         print 'Requeued %i messages' % requeued_messages
         channel.close()
+
+
+    def fire_event(self, msg):
+        mq_property = pika.BasicProperties(headers={'messageType': 'com.haima.cloudplayer.servicecore.domain.cloudservice.StateEventCarrier'})
+        mq_property.correlation_id = "12312312"
+        channel = self.amqp_conn.channel()
+        channel.basic_publish(exchange='exchange.cloudservice.channel.statemachine',
+                              routing_key="com.haima.cloudplayer.servicecore.domain.cloudservice.StateEventCarrier",
+                              body=str(msg),
+                              properties=mq_property)
+        channel.close()
+
 
     def send_msg_access(self, msg):
         channel = self.amqp_conn.channel()
@@ -133,7 +145,24 @@ class CloudAMQP(object):
         self.send_msg_access(msg)
 
 
+class CidEvent(object):
+    __slots__ = ('cid', 'event')
+
+    def __init__(self, cid, event):
+        self.cid = cid
+        self.event = event
+
+
+
+    def __str__(self):
+        class_path = "com.haima.cloudplayer.servicecore.domain.cloudservice."
+        event_class_name = class_path + "StateEvent" + self.event
+        class_name = class_path + "StateEventCarrier"
+        return '{"@type":"%s","cid":%s,"event":{"@type":"%s","eventType":"%s"}}'\
+               %(class_name, self.cid, event_class_name, self.event)
 
 if __name__ == "__main__":
-    cloud_mq =  CloudAMQP(host="172.16.2.77")
-    cloud_mq.send_ready_stop_message('78470')
+    cloud_mq = CloudAMQP(host="172.16.2.16", virtual_host='/cloudplayer_paas_test')
+    test = CidEvent("1", "AccessLinkFailed")
+    print test
+    cloud_mq.fire_event(test)

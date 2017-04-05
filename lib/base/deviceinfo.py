@@ -43,7 +43,7 @@ class DeviceInfo(BaseInfo):
     def __init__(self):
         super(DeviceInfo, self).__init__()
         self.__attrs__ = ['ip', 'mac', 'imei', 'imsi', 'osType', 'osVersion', 'brand', 'model', 'isWifi', 'networkType',
-                 'dataCenterId', 'androidInfo', 'iosInfo', 'pcInfo', 'webInfo', 'macInfo', 'screenInfo']
+                 'dataCenterId', 'androidInfo', 'iosInfo', 'pcInfo', 'webInfo', 'macInfo', 'screenInfo', 'hardDecoderSupported']
 
 
 if __name__ == "__main__":

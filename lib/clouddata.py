@@ -93,6 +93,7 @@ def generate_device_info(sdk_type, client_ip=None):
         device_info.screenInfo = generate_screen_info()
         device_info.networkType = ""
         device_info.isWifi = ""
+        device_info.hardDecoderSupported = "1"
     if sdk_type == TYPE_ANDROID:
         device_info.androidInfo = generate_android_info()
         device_info.screenInfo = generate_screen_info()
