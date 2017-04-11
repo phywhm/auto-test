@@ -167,8 +167,39 @@ class CloudDB(object):
         finally:
             self.__close()
 
+    def get_machine_status(self, cid):
+        result = None
+        try:
+            self.__connect_db()
+            self.cur = self.conn.cursor()
+            selectsql = "select status from t_cloud_service_channel where id=%s" %(cid)
+
+            self.conn.select_db("db_service_core_test")
+            rows_num = self.cur.execute(selectsql)
+            if rows_num >= 1:
+                result = self.cur.fetchone()[0]
+            return result
+        finally:
+            self.__close()
+
+    def init_machine(self, status):
+        try:
+            self.__connect_db()
+            self.cur = self.conn.cursor()
+            selectsql = "insert into t_cloud_service_channel (`cloudservice_product_id`, `status`) VALUES ('928273','%s');" % (status)
+            self.cur.execute(
+                "SELECT `AUTO_INCREMENT` FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='db_service_core_test' AND TABLE_NAME='t_cloud_service_channel';")
+            cid =  self.cur.fetchone()[0]
+            self.conn.select_db("db_service_core_test")
+
+            self.cur.execute(selectsql)
+
+            self.conn.commit()
+            return cid
+        finally:
+            self.__close()
 
 
 if __name__ == "__main__":
     mydb =  CloudDB("172.16.2.16")
-    print mydb.get_instance_status_by_cid("123")
+    print mydb.init_machine("Created")

@@ -69,6 +69,13 @@ PROTOCOL_VERSION = _get_config(p, 'cloudenv', 'protocol_version', "PROTOCOL_VERS
 SECRET_KEY = _get_config(p, 'cloudenv', 'secret_key', 'SECRET_KEY', 'and0123456789012')
 PASS_DB = _get_config(p, "cloudenv", 'paas_db', "PASS_DB", "cloudplayer_controller_show") #测试环境
 
+
+AMQP_USER = _get_config(p, 'cloudenv', 'amqp_user', "AMQP_USER", "admin")
+AMQP_PASSWD = _get_config(p, 'cloudenv', 'amqp_passwd', "AMQP_PASSWD", "admin")
+AMQP_HOST = _get_config(p, 'cloudenv', 'amqp_host', "AMQP_HOST", "172.16.2.16")
+AMQP_PORT = _get_config(p, 'cloudenv', 'amqp_port', "AMQP_PORT", 5672)
+VIRTUAL_HOST = _get_config(p, 'cloudenv', 'virtual_host', "VIRTUAL_HOST", "/cloudplayer_paas_test")
+
 REDIS_HOST = _get_config(p, 'cloudenv', 'redis_host', "REDIS_HOST", "172.16.2.90")
 REDIS_PORT = _get_config(p, 'cloudenv', 'redis_port', "REDIS_PORT", 6379)
 REDIS_DB = _get_config(p, 'cloudenv', 'redis_db', "REDIS_DB", 0)

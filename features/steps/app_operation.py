@@ -2,14 +2,36 @@
 #-*- coding: UTF-8 -*-
 
 from lib.clouddb import CloudDB
-from lib.clouduser import CloudUser
 from lib import common
 from lib.untils import formatdata
 from behave import *
 from hamcrest import *
 import time
-import os
+from lib.cloudamqp import CloudAMQP
 import random
+
+
+@step(u'user create a machine with "{status}" status')
+def step_impl(context, status):
+    cloud_db = CloudDB()
+    cid = cloud_db.init_machine(status)
+    context.scenario.current_cid = cid
+
+@step(u'user fire the "{event_name}" event')
+def step_impl(context, event_name):
+    cloud_mq = CloudAMQP()
+    cloud_mq.fire_event(context.scenario.current_cid, event_name)
+
+@step(u'the status of the machine should be "{status}"')
+def step_impl(context, status):
+    for i in range(20):
+        time.sleep(2)
+        cloud_db = CloudDB()
+        real_status = cloud_db.get_machine_status(context.scenario.current_cid)
+        if str(real_status) == status:
+            break
+    assert_that(status, equal_to(str(real_status)))
+
 
 
 @step(u'I delete the record of instance from database')

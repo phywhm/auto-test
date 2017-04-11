@@ -53,7 +53,7 @@ class CloudRedis(object):
 
 
 if __name__ == "__main__":
-    os.environ["REDIS_HOST"] = "172.16.2.90"
+    os.environ["REDIS_HOST"] = "172.16.2.16"
     cloud_redis = CloudRedis()
     #cloud_redis.set_wait_time()
     #cloud_redis.delete_keys("APP_GLOBAL_CONFIG*")
@@ -62,8 +62,8 @@ if __name__ == "__main__":
     #    if cloud_redis.get_ttl(key) is not None:
     #        print key, cloud_redis.get_ttl(key)
     #cloud_redis.delete_keys("saas_access_fail_message_to_*")
-    for key in cloud_redis.get_keys("APP_GLOBAL_CONFIG*"):
-        print key, cloud_redis.get_ttl(key)
+    for key in cloud_redis.get_keys("channel-context-*"):
+        print key, cloud_redis.get_vaule(key)
     #cloud_redis.delete_keys("APP_GLOBAL_CONFIG*")
     print cloud_redis.get_vaule("APP_GLOBAL_CONFIG_xiamatest")
     #print cloud_redis.get_avgwait_time()

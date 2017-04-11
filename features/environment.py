@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 #-*- coding: UTF-8 -*-
-from lib.clouddb import CloudDB
+
 from lib import configuration as C
 from lib import common
-import os
 import time
 
 def before_scenario(context, scenario):

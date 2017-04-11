@@ -14,7 +14,7 @@ class CloudAMQP(object):
                                                          credentials=credential)
         else:
             credential = pika.PlainCredentials(CONFIG.AMQP_USER, CONFIG.AMQP_PASSWD)
-            self.amqp_params = pika.ConnectionParameters(host=CONFIG.SAAS_HOST, port=CONFIG.AMQP_PORT, virtual_host=CONFIG.VIRTUAL_HOST,
+            self.amqp_params = pika.ConnectionParameters(host=CONFIG.AMQP_HOST, port=CONFIG.AMQP_PORT, virtual_host=CONFIG.VIRTUAL_HOST,
                                                          credentials=credential)
 
         self.amqp_conn = pika.BlockingConnection(self.amqp_params)
@@ -30,13 +30,14 @@ class CloudAMQP(object):
         channel.close()
 
 
-    def fire_event(self, msg):
+    def fire_event(self, cid, event):
+        test = CidEvent(cid, event)
         mq_property = pika.BasicProperties(headers={'messageType': 'com.haima.cloudplayer.servicecore.domain.cloudservice.StateEventCarrier'})
         mq_property.correlation_id = "12312312"
         channel = self.amqp_conn.channel()
         channel.basic_publish(exchange='exchange.cloudservice.channel.statemachine',
                               routing_key="com.haima.cloudplayer.servicecore.domain.cloudservice.StateEventCarrier",
-                              body=str(msg),
+                              body=str(test),
                               properties=mq_property)
         channel.close()
 
@@ -162,7 +163,6 @@ class CidEvent(object):
                %(class_name, self.cid, event_class_name, self.event)
 
 if __name__ == "__main__":
-    cloud_mq = CloudAMQP(host="172.16.2.16", virtual_host='/cloudplayer_paas_test')
-    test = CidEvent("1", "AccessLinkFailed")
-    print test
-    cloud_mq.fire_event(test)
+    cloud_mq = CloudAMQP()
+
+    cloud_mq.fire_event("24", "AccessLinkSuccess")

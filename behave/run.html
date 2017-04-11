@@ -75,41 +75,390 @@
 </head>
 <body>	<div class="feature">
 	<span class="label pass">Feature:</span>
-	<span class="name">all kinds of scenarios on Stoken</span>
+	<span class="name">state machine testing</span>
 		<div class="children scenario" style="display: block;">
-			<span class="label pass">Scenario</span>
-			<span class="name">refresh stoken when the status of instance is 4</span>
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.1 </span>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I registry an user with "xiamatest" access key</span>
+				<span class="name">user create a machine with "Created" status</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I request a "random" app</span>
+				<span class="name">user fire the "AccessLinkSuccess" event</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I wait "1000" ms</span>
+				<span class="name">the status of the machine should be "Linked"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.2 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">the status of instance should be "4"</span>
+				<span class="name">user fire the "AccessLinkFailed" event</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">I refresh the stoken of instance</span>
+				<span class="name">the status of the machine should be "Finished"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.3 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">the status of instance should be "4"</span>
+				<span class="name">user fire the "SyncApplyInstanceSuccess" event</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">the instance should receive "address" message</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.4 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">the instance num of "xiamatest" should be "501"</span>
+				<span class="name">user fire the "SyncApplyInstanceNoIdle" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.5 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "SyncApplyInstanceRpcException" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.6 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "SyncApplyInstanceRetry" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.7 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "SyncApplyInstanceRetryOut" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.8 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "SyncApplyInstanceError" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.9 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "AsyncInstancePreparationSuccess" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.10 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "AsyncInstancePreparationFailed" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.11 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "CloudServiceApply" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.12 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "CloudServiceTimeout" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label fail">Scenario Outline</span>
+			<span class="name">test the init status -- @1.13 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "CloudUserExit" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label fail">step:</span>
+				<span class="name">the status of the machine should be "Finished"</span>
+				<div class="children lable error">[u'Assertion Failed: ', u"Expected: 'Created'", u"     but: was 'Finished'", u'', u'Captured logging:', u'INFO:pika.adapters.base_connection:Connecting to 172.16.2.16:5672', u'INFO:pika.adapters.blocking_connection:Created channel=1', u'INFO:pika.adapters.blocking_connection:Channel.close(0, Normal Shutdown)', u'INFO:pika.channel:Channel.close(0, Normal Shutdown)']</div>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.14 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "AccessLinkClientDisconnectTimeout" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.15 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "AccessLinkServerDisconnect" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.16 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "InstanceNoInputTimeout" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.17 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "InstanceError" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.18 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "InstanceReleaseSuccess" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.19 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "InstanceReleaseFailed" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.20 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "InstanceReleaseRetry" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.21 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "InstanceReleaseRetryOut" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.22 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "CloudUserEnqueueConfirmYes" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.23 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "CloudUserDequeue" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario Outline</span>
+			<span class="name">test the init status -- @1.24 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user create a machine with "Created" status</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">user fire the "CloudUserEnqueue" event</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">the status of the machine should be "Created"</span>
 			</div>
 		</div>
 	</div>
