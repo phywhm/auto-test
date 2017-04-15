@@ -30,8 +30,9 @@ def after_scenario(context, scenario):
     del scenario.current_instance
     del scenario.appids
     del scenario.deleted_instance
-    params = {"operation": "test.unset.params"}
+    params = {"operation": "test.unset.params", "param": "all"}
     common.run_request(context.mock_server, "POST", params)
+
 
 
 

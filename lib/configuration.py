@@ -80,6 +80,6 @@ REDIS_HOST = _get_config(p, 'cloudenv', 'redis_host', "REDIS_HOST", "172.16.2.90
 REDIS_PORT = _get_config(p, 'cloudenv', 'redis_port', "REDIS_PORT", 6379)
 REDIS_DB = _get_config(p, 'cloudenv', 'redis_db', "REDIS_DB", 0)
 REDIS_PASSWD = _get_config(p, 'cloudenv', 'redis_passwd', "REDIS_PASSWD", "123qwe")
-USE_CTOKEN_BACKDOOR = _get_config(p, 'cloudenv', 'use_ctoken_backdoor', "USE_CTOKEN_BACKDOOR", 0)
+USE_CTOKEN_BACKDOOR = _get_config(p, 'cloudenv', 'use_ctoken_backdoor', "USE_CTOKEN_BACKDOOR", 1)
 
 

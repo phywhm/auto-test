@@ -2,18 +2,16 @@
 #-*- coding: UTF-8 -*-
 
 from lib.clouddb import CloudDB
-from lib.clouduser import CloudUser
-from lib import common
 from behave import *
 from hamcrest import *
 import time
-import os
 import json
 
 all_types = {"kicked": 2, "waiting": 1, "confirm": 6, "refreshstoken": 11, "error": 3, "overtime": 4, "resolution": 12,
              "apply": 9, "ready": 10, "address": 5, "changeResolution": 12}
 
-@step(u'the instance should be deleted successfully')
+
+@step(u'这个请求应该被成功释放')
 def step_impl(context):
     time.sleep(5)
     cloud_db = CloudDB()
@@ -22,6 +20,8 @@ def step_impl(context):
     assert_that(real_status, equal_to(None))
     real_cid = cloud_db.check_cid_existed(cid)
     assert_that(real_cid, equal_to(False))
+
+
 
 @step(u'the instance is kicked from queue')
 def step_impl(context):

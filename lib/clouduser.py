@@ -19,10 +19,18 @@ class CloudUser(object):
         cloud_request = CloudRequest(self, countly, **kargs)
         cloud_request.get_cid(package_name)
 
-    def start_instance(self, package_name, countly=False, **kargs):
-        cloud_request = CloudRequest(self, countly, **kargs)
+    def start_instance(self, package_name, countly=False, status=None ,kargs={}):
+        cloud_request = CloudRequest(self, countly, kargs)
         kargs['pkgname'] = package_name
-        cloud_request.start_instance(**kargs)
+        if status is None:
+            cloud_request.start_instance(kargs)
+        elif status == "Created":
+            cloud_request.start_instance(kargs['pkgname'])
+        elif status == "Linked":
+            cloud_request.start_instance(kargs['pkgname'])
+            cloud_request.websocket_connect()
+        else:
+            pass
         self.instances.append(cloud_request)
         return cloud_request
 
@@ -36,7 +44,8 @@ class CloudUser(object):
 
 if __name__ == "__main__":
     #8F3BB845AD4   9599e53c
-    clouduser01 = CloudUser('cpd125212773', '029694a0fafac97c5435a1a97a909222', "BE72685596F")
-    clouduser01.state_machine_init("12122.121.12")
+    clouduser01 = CloudUser('cpd125212773', '029694a0fafac97c5435a1a97a909222', "xiamatest")
+    clouduser01.start_instance("test.test.test")
+    #clouduser01.state_machine_init("12122.121.12")
     #time.sleep(20)
     #clouduser01.stop_instances()

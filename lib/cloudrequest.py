@@ -121,7 +121,7 @@ class CloudRequest(object):
             self.sdk_type = int(kargs['os_type'])
         else:
             #self.sdk_type = formatdata.random_int(1, 5)
-            self.sdk_type = random.choice((2, 3))
+            self.sdk_type = 3 #random.choice((2, 3))
 
         # generate the  request body
         params = clouddata.generate_comm_request(ACTION_DID_REGISTER, self.sdk_type, self.protocol)
@@ -187,7 +187,7 @@ class CloudRequest(object):
         if 'secretKey' in res['data']:
             self.secret_key = res['data']['secretKey']
 
-    def get_instance(self, **kargs):
+    def get_instance(self, kargs):
         params = clouddata.generate_comm_request(ACTION_GET_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
         if 'playingTime' not in kargs:
             kargs['playingTime'] = self.playing_time
@@ -336,6 +336,8 @@ class CloudRequest(object):
                 except Exception:
                     continue
                 jsondata = json.loads(data)
+                if jsondata['type'] == 1:
+                    continue
                 operation = json.loads(jsondata['payload'])['operation']
                 self.messages.append(json.loads(jsondata['payload']))
                 logger.info(jsondata)

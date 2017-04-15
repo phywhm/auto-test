@@ -21,13 +21,18 @@ DEFAULT_ROUTE = "99,99"
 CUSTOM_MAX_INSTACNE = None
 CUSTOM_CALLBACK_TIME = None
 CUSTOM_ROUTE = None
+MAX_ERROR_TIMES = 0
 
 
 class MockHandler(BaseHTTPRequestHandler):
+    error_times = 0
+    route_map = {}
+    routes = ['2,4', '3,4', '5,4']
     def do_POST(self):
         global CUSTOM_MAX_INSTACNE
         global CUSTOM_CALLBACK_TIME
         global CUSTOM_ROUTE
+        global MAX_ERROR_TIMES
         max_instance = MAX_INSTANCE_NUM if CUSTOM_MAX_INSTACNE is None else CUSTOM_MAX_INSTACNE
         self.response = {"operation": "com.haima.cloudplayer.controller.instance.apply", "code": 1000, "message": "ok",
                          "memo": "operation successfully"}
@@ -84,15 +89,29 @@ class MockHandler(BaseHTTPRequestHandler):
                 CUSTOM_MAX_INSTACNE = int(datas['max_num'])
             if 'callback_interval' in datas:
                 CUSTOM_CALLBACK_TIME = int(datas['callback_interval'])
-        elif datas['operation'] == "test.set.route":
-            CUSTOM_ROUTE = datas['routes']
-        elif datas['operation'] == "test.unset.route":
-            CUSTOM_ROUTE = None
+            if 'max_error_times' in datas:
+                MAX_ERROR_TIMES = int(datas['max_error_times'])
+                MockHandler.error_times = 0
+            if 'custom_route' in datas:
+                CUSTOM_ROUTE = datas['custom_route']
         elif datas['operation'] == "test.unset.params":
-            CUSTOM_MAX_INSTACNE = None
-            CUSTOM_CALLBACK_TIME = None
-            CUSTOM_ROUTE = None
-            
+            if datas['param'] == "max_num" or datas['param'] == "all":
+                CUSTOM_MAX_INSTACNE = None
+            if datas['param'] == "callback_interval" or datas['param'] == "all":
+                CUSTOM_CALLBACK_TIME = None
+            if datas['param'] == "custom_route" or datas['param'] == "all":
+                CUSTOM_ROUTE = None
+            if datas['param'] == "max_error_times" or datas['param'] == "all":
+                MAX_ERROR_TIMES = 0
+                MockHandler.error_times = 0
+
+        print "----", MockHandler.error_times
+        if MAX_ERROR_TIMES != 0 and MockHandler.error_times <= MAX_ERROR_TIMES:
+            if MockHandler.error_times != 0:
+                MockHandler.error_times += 1
+                return
+            MockHandler.error_times += 1
+
         self.send_myresponse(json.dumps(self.response))
 
     def send_myresponse(self, content):
@@ -110,6 +129,8 @@ class MockHandler(BaseHTTPRequestHandler):
 
     def notify_instance(self, cid, status):
         intervel = CUSTOM_CALLBACK_TIME if CUSTOM_CALLBACK_TIME is not None else CALL_BACK_TIME
+        if int(intervel) == 0:
+            return
         time.sleep(int(intervel)/1000)
         params = clouddata.generate_comm_request(203)
         params.data = clouddata.generate_instance_info(cid, status)

@@ -1,7 +1,111 @@
-Feature: test the feature on the queue
+Feature: 排队的基本功能
 """
     make sure that all kinds of releasing can make the next request work fine
 """
+
+
+  Scenario: 接入商只能获得订单中的实例个数
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置租户"xiamatest"订单并发量为"501", 实际已占用实例个数为"500"
+    Given 用户申请一个实例
+    And 等待"2000"毫秒
+    Then 这个请求的状态应该是"InService"
+    And 租户"xiamatest"实际已占用实例个数为"501"
+    Given 用户申请一个实例
+    And 等待"2000"毫秒
+    #TODO: 这个申请不要确认入队, 请求状态应该是"WaitingConfirmEnqueue"
+    Then 这个请求的状态应该是"Enqueue"
+    And 租户"xiamatest"实际已占用实例个数为"501"
+
+  Scenario: 没有空闲实例会导致用户排队
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置paas的最大实例数为"1"
+    Given 用户申请一个实例
+    And 等待"2000"毫秒
+    Then 这个请求的状态应该是"InService"
+    And 租户"xiamatest"实际已占用实例个数为"501"
+    Given 用户申请一个实例
+    And 等待"2000"毫秒
+    #TODO: 这个申请不要确认入队, 请求状态应该是"WaitingConfirmEnqueue"
+    Then 这个请求的状态应该是"Enqueue"
+    And 租户"xiamatest"实际已占用实例个数为"501"
+
+
+  Scenario: 优先级高的请求优先获取实例
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置paas的最大实例数为"1"
+    Given 用户申请一个实例
+    And 等待"2000"毫秒
+    Given 用户申请一个实例根据以下参数:
+      |    key   |  value |
+      | priority |  2000  |
+    And 等待"1000"毫秒
+    Given 用户申请一个实例根据以下参数:
+      |    key   |  value |
+      | priority |  2001  |
+    And 等待"1000"毫秒
+    Then 这个请求的状态应该是"Enqueue"
+    When 用户释放第"0"个实例
+    Then 最后一个请求的状态应该是"InService"
+
+  Scenario: 优先级相同时, 先入队的请求优先获取实例
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置paas的最大实例数为"1"
+    Given 用户申请一个实例
+    And 等待"2000"毫秒
+    Given 用户申请一个实例根据以下参数:
+      |    key   |  value |
+      | confirm  |  False  |
+    And 等待"1000"毫秒
+    Given 用户申请一个实例根据以下参数:
+      |    key   |  value |
+      | confirm  |  False |
+    And 等待"1000"毫秒
+    Then 这个请求的状态应该是"WaitingConfirmEnqueue"
+    When 用户确认请求入队
+    And 用户确认第"1"个请求入队
+    When 用户释放第"0"个实例
+    Then 最后一个请求的状态应该是"Enqueue"
+    And 第"1"个请求的状态应该是"InService"
+
+  Scenario: 排队的请求定期收到排队消息
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置paas的最大实例数为"1"
+    Given 用户申请一个实例
+    And 等待"2000"毫秒
+    Given 用户申请一个实例根据以下参数:
+      |    key   |  value |
+      | priority |  2000  |
+    And 等待"1000"毫秒
+    Given 用户申请一个实例根据以下参数:
+      |    key   |  value |
+      | priority |  2001  |
+    And 等待"1000"毫秒
+    Then 这个请求的排队位置应该是"1"
+    And 第"1"个请求的排队位置应该是"2"
+    When 用户释放第"0"个实例
+    Then 最后一个请求的状态应该是"InService"
+    And 第"1"个请求的排队位置应该是"1"
+
+  Scenario: 用户释放实例会随机触发同一个router的请求申请实例
+
+  Scenario: 随机触发的实例申请不会是已达到实例上限的队列
+    Given 设置paas的最大实例数为"2"
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置租户"xiamatest"订单并发量为"501", 实际已占用实例个数为"500"
+    Given 用户申请一个实例
+    Given 用户申请一个实例
+    Given 玩家通过租户"xiamatest01"注册一个用户
+    Given 用户申请一个实例
+    And 等待"2000"毫秒
+    Then 这个请求的状态应该是"InService"
+    When 开始记录paas收到的请求
+    And 用户释放实例
+    And 等待"2000"毫秒
+    And 获取paas收到的请求
+    Then paas的请求中不包含"InstanceApply"的请求
+
+
 
     Scenario Outline: notifying error status will reduce the instance count when limit le real instance count
         Given I registry an user with "xiamatest" access key

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#-*- coding: UTF-8 -*-
+# -*- coding: UTF-8 -*-
 
 from lib.clouduser import CloudUser
 from lib.clouddb import CloudDB
@@ -7,9 +7,9 @@ from lib.untils import formatdata
 from behave import *
 from hamcrest import *
 import time
-import os
 
-@step(u'I registry an user with "{access_key}" access key')
+use_step_matcher("parse")
+@step(u'玩家通过租户"{access_key}"注册一个用户')
 def step_impl(context, access_key):
     cloud_db = CloudDB()
     user = "xTest" + formatdata.random_str(4)

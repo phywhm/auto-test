@@ -1,67 +1,61 @@
 Feature: all kinds of scenarios on Stoken
 
-    Scenario: refresh stoken when the status of instance is 0
-        Given I registry an user with "xiamatest" access key
-        Given I update the instance limit to 501 and count to 500 on "xiamatest" access key
-        Given I request a "random" app
-        Then I wait "1000" ms
-        Given I request a "random" app
-        Then I wait "1000" ms
-        When I refresh the stoken of instance
-        Then the status of instance should be "0"
-        And the instance should receive "waiting" message
-        And the instance num of "xiamatest" should be "501"
+  Scenario: 正常刷新stoken
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 用户申请一个"random"实例
+    Then 等待"1000"毫秒
+    Then 这个请求的状态应该是"InService"
+    When 用户刷新实例的stoken
+    Then 这个请求的状态应该是"InService"
+    And the instance should receive "address" message
+    And the instance num of "xiamatest" should be "501"
 
-    Scenario: refresh stoken when the status of instance is 3
-        Given I registry an user with "xiamatest" access key
-        Given I change the callback interval of paas to "120000"
-        Given I request a "random" app
-        Then I wait "1000" ms
-        When I refresh the stoken of instance
-        Then the status of instance should be "3"
-        And the instance should receive "ready" message
-        And the instance num of "xiamatest" should be "501"
-
-
-    Scenario: refresh stoken when the status of instance is 4
-        Given I registry an user with "xiamatest" access key
-        Given I request a "random" app
-        Then I wait "1000" ms
-        Then the status of instance should be "4"
-        When I refresh the stoken of instance
-        Then the status of instance should be "4"
-        And the instance should receive "address" message
-        And the instance num of "xiamatest" should be "501"
+  Scenario: 当用户达到最大实例数时, 刷新stoken
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 用户申请一个"random"实例
+    Then 等待"1000"毫秒
+    Given 用户申请一个"random"实例
+    Then 等待"1000"毫秒
+    Given 用户申请一个"random"实例
+    Then 等待"1000"毫秒
+    Given 用户申请一个"random"实例
+    Then 等待"1000"毫秒
+    Given 用户申请一个"random"实例
+    Then 这个请求的状态应该是"InService"
+    When 用户刷新实例的stoken
+    Then 这个请求的状态应该是"InService"
+    And the instance should receive "address" message
+    And the instance num of "xiamatest" should be "505"
 
 
-    Scenario: refresh stoken when one user have 5 instances
-        Given I registry an user with "xiamatest" access key
-        Given I request a "random" app
-        Then I wait "1000" ms
-        Given I request a "random" app
-        Then I wait "1000" ms
-        Given I request a "random" app
-        Then I wait "1000" ms
-        Given I request a "random" app
-        Then I wait "1000" ms
-        Given I request a "random" app
-        Then the status of instance should be "4"
-        When I refresh the stoken of instance
-        Then the status of instance should be "4"
-        And the instance should receive "address" message
-        And the instance num of "xiamatest" should be "505"
+#  Scenario Outline: 当请求在不同状态下, 刷新stoken
+
+  Scenario: 刷新stoken时, Paas服务异常
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 用户申请一个"random"实例
+    When 等待"2000"毫秒
+    Then 这个请求的状态应该是"InService"
+    When 设置paas的错误响应次数为"1"
+    And 用户刷新实例的stoken
+    Then 这个请求的状态应该是"Finish"
 
 
-     #TODO: should complete run shell command on server
-"""
-    Scenario: refresh stoken when there is no instance record
-        Given I registry an user with "xiamatest" access key
-        Given I request a "random" app
-        Then the status of instance should be "4"
-        Given I try to stop the instance
-        When I refresh the stoken of instance
-        And the instance num of "xiamatest" should be "500"
-        Given I request a "random" app
-        Then the status of instance should be "4"
-        And the instance num of "xiamatest" should be "501"
-"""
+  Scenario: 刷新stoken时, Paas没有回调流地址
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 用户申请一个"random"实例
+    When 等待"2000"毫秒
+    Then 这个请求的状态应该是"InService"
+    When 设置paas不返回回调地址
+    And 用户刷新实例的stoken
+    Then 这个请求的状态应该是"Finish"
+    
+  Scenario: 刷新stoken时, Paas没有回调刷新失败
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 用户申请一个"random"实例
+    When 等待"2000"毫秒
+    Then 这个请求的状态应该是"InService"
+    When 设置paas不返回回调地址
+    And 用户刷新实例的stoken
+    And 模拟paas回调实例的状态为"13"
+    Then 这个请求的状态应该是"Finish"
+
