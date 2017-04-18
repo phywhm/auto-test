@@ -31,15 +31,3 @@ def step_impl(context, status):
         if str(real_status) == status:
             break
     assert_that(status, equal_to(str(real_status)))
-
-
-@step(u'这个状态机的状态应该是"{status}"')
-def step_impl(context, status):
-    real_status = ""
-    for i in range(20):
-        time.sleep(2)
-        cloud_db = CloudDB()
-        real_status = cloud_db.get_machine_status(context.scenario.current_cid)
-        if str(real_status) == status:
-            break
-    assert_that(status, equal_to(str(real_status)))

@@ -54,7 +54,7 @@ class CloudStatus(object):
 
 
 class CloudRequest(object):
-    def __init__(self, cloud_user, countly=False, **kargs):
+    def __init__(self, cloud_user, countly=False, kargs={}):
         reload(CONFIG)
         self.cloud_user = cloud_user
         self.sdk_type = None
@@ -90,7 +90,7 @@ class CloudRequest(object):
             self.client.accessKeyID = self.access_key
 
 
-        self.registry_sdk(**kargs)
+        self.registry_sdk(kargs)
 
 
     def __clould_request(self, params, header={}):
@@ -116,12 +116,12 @@ class CloudRequest(object):
             res = encryption.decrypt_cloud_response(res, self.secret_key)
             return res
 
-    def registry_sdk(self, **kargs):
+    def registry_sdk(self, kargs):
         if 'os_type' in kargs:
             self.sdk_type = int(kargs['os_type'])
         else:
             #self.sdk_type = formatdata.random_int(1, 5)
-            self.sdk_type = 3 #random.choice((2, 3))
+            self.sdk_type = 2 #random.choice((2, 3))
 
         # generate the  request body
         params = clouddata.generate_comm_request(ACTION_DID_REGISTER, self.sdk_type, self.protocol)
@@ -187,7 +187,7 @@ class CloudRequest(object):
         if 'secretKey' in res['data']:
             self.secret_key = res['data']['secretKey']
 
-    def get_instance(self, kargs):
+    def get_instance(self, kargs={}):
         params = clouddata.generate_comm_request(ACTION_GET_CLOUD_SERVICE, self.sdk_type, self.protocol, self.did)
         if 'playingTime' not in kargs:
             kargs['playingTime'] = self.playing_time
@@ -335,7 +335,10 @@ class CloudRequest(object):
                     data = self.socket.recv()
                 except Exception:
                     continue
-                jsondata = json.loads(data)
+                try:
+                    jsondata = json.loads(data)
+                except ValueError:
+                    continue
                 if jsondata['type'] == 1:
                     continue
                 operation = json.loads(jsondata['payload'])['operation']
@@ -406,7 +409,7 @@ class CloudRequest(object):
             if self.countly and self.timer is not None:
                 self.timer.cancel()
 
-    def start_instance(self, **kargs):
+    def start_instance(self, kargs):
         if 'confirm' in kargs:
             auto_confirm = kargs['confirm']
         else:
@@ -425,7 +428,7 @@ class CloudRequest(object):
                 pre_events(self.cloud_countly, self)
             self.get_cid(kargs['pkgname'])
             self.websocket_connect(auto_confirm, ping)
-            self.get_instance(**kargs)
+            self.get_instance(kargs)
             end_time = datetime.now()
             self.cloud_timer.add_action_timer(ActionTimer('all_request', self.start_time, end_time))
         except Exception as e:

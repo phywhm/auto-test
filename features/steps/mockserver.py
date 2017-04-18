@@ -50,7 +50,7 @@ def step_impl(context):
 use_step_matcher("re")
 
 
-@step(u'paas的请求中(?P<key>不)?包含"(?P<operation>.*)"的请求')
+@step(u'paas收到的请求中应该(?P<key>不)?包含"(?P<operation>.*)"的请求')
 def step_impl(context, key, operation):
     contain = False
     for request in context.scenario.paas_request:

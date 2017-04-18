@@ -173,7 +173,7 @@ class CloudDB(object):
             self.__connect_db()
             self.cur = self.conn.cursor()
             selectsql = "select status from t_cloud_service_channel where id=%s" %(cid)
-
+            print selectsql
             self.conn.select_db("db_service_core_test")
             rows_num = self.cur.execute(selectsql)
             if rows_num >= 1:
@@ -186,12 +186,13 @@ class CloudDB(object):
         try:
             self.__connect_db()
             self.cur = self.conn.cursor()
-            selectsql = "insert into t_cloud_service_channel (`cloudservice_product_id`, `status`) VALUES ('928273','%s');" % (status)
+
             self.cur.execute(
                 "SELECT `AUTO_INCREMENT` FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='db_service_core_test' AND TABLE_NAME='t_cloud_service_channel';")
             cid =  self.cur.fetchone()[0]
             self.conn.select_db("db_service_core_test")
-
+            selectsql = "insert into t_cloud_service_channel (`cloudservice_product_id`,`paas_service_id`, `status`) VALUES ('1','9-%s','%s');" % (cid,
+            status)
             self.cur.execute(selectsql)
 
             self.conn.commit()

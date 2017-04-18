@@ -11,17 +11,6 @@ all_types = {"kicked": 2, "waiting": 1, "confirm": 6, "refreshstoken": 11, "erro
              "apply": 9, "ready": 10, "address": 5, "changeResolution": 12}
 
 
-@step(u'这个请求应该被成功释放')
-def step_impl(context):
-    time.sleep(5)
-    cloud_db = CloudDB()
-    cid = context.scenario.deleted_instance.cid
-    real_status = cloud_db.get_instance_status_by_cid(cid)
-    assert_that(real_status, equal_to(None))
-    real_cid = cloud_db.check_cid_existed(cid)
-    assert_that(real_cid, equal_to(False))
-
-
 
 @step(u'the instance is kicked from queue')
 def step_impl(context):

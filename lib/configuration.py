@@ -47,7 +47,7 @@ def _get_config(p, section, key, env_var, default):
 
 
 p = load_config_file()
-SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "localhost")       #测试环境
+SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "172.16.2.125")       #测试环境
 #SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "172.16.2.100")        #demo
 #SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "172.16.2.169")    #支付
 #SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "saasauth-migu# .haimawan.com")  #teng dev
@@ -76,7 +76,7 @@ AMQP_HOST = _get_config(p, 'cloudenv', 'amqp_host', "AMQP_HOST", "172.16.2.16")
 AMQP_PORT = _get_config(p, 'cloudenv', 'amqp_port', "AMQP_PORT", 5672)
 VIRTUAL_HOST = _get_config(p, 'cloudenv', 'virtual_host', "VIRTUAL_HOST", "/cloudplayer_paas_test")
 
-REDIS_HOST = _get_config(p, 'cloudenv', 'redis_host', "REDIS_HOST", "172.16.2.90")
+REDIS_HOST = _get_config(p, 'cloudenv', 'redis_host', "REDIS_HOST", "172.16.2.16")
 REDIS_PORT = _get_config(p, 'cloudenv', 'redis_port', "REDIS_PORT", 6379)
 REDIS_DB = _get_config(p, 'cloudenv', 'redis_db', "REDIS_DB", 0)
 REDIS_PASSWD = _get_config(p, 'cloudenv', 'redis_passwd', "REDIS_PASSWD", "123qwe")

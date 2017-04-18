@@ -3,6 +3,7 @@
 
 from lib.clouduser import CloudUser
 from lib.clouddb import CloudDB
+from lib.cloudredis import CloudRedis
 from lib.untils import formatdata
 from behave import *
 from hamcrest import *
@@ -12,13 +13,15 @@ use_step_matcher("parse")
 @step(u'玩家通过租户"{access_key}"注册一个用户')
 def step_impl(context, access_key):
     cloud_db = CloudDB()
+    cloud_redis = CloudRedis()
     user = "xTest" + formatdata.random_str(4)
     context.scenario.current_user = CloudUser(user, "password", access_key)
     context.scenario.users.append(context.scenario.current_user)
     if access_key not in context.scenario.appids:
-        cloud_db.update_access_limit(access_key)
+        #cloud_db.update_access_limit(access_key)
+        cloud_redis.set_value("cloudservice-count-12", "500")
         context.scenario.appids.append(access_key)
-        time.sleep(3)
+        time.sleep(2)
 
 
 use_step_matcher("re")

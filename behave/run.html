@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style rel="stylesheet" type="text/css">
+.scenario {
+    border: 1px solid #ccc;
+}
+
+.step {
+    border: 1px dashed #ccc;
+}
+
+.children {
+    display: none;
+    margin-left: 1.4em;
+}
+
+/* Containers */
+.feature, #errors {
+    border: 1px solid #ccc;
+    padding: 0.3em 0.2em;
+    margin: 0.2em 0;
+}
+
+.fail {
+    color: #f33 !important;
+    font-weight: bold;
+}
+.pass {
+    color: #393 !important;
+}
+.label {
+    padding: 2px 5px;
+    font-size: 0.75em;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    color: black;
+    background-color: #ddd;
+    border-radius: 3px;
+}
+.label.debug, .label.trace, .label.error, .label.keyword {
+    letter-spacing: 0;
+}
+.label.error, .label.fail, .label.pass, .label.warn {
+    color: #fff !important;
+    font-weight: bold;
+}
+.label.error, .label.fail {
+    background-color: #d9534f;
+}
+.label.pass {
+    background-color: #5cb85c;
+}
+
+.label.skip {
+    background-color: dodgerblue;
+}
+.label.warn {
+    background-color: #ec971f;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 0.75em;
+}
+
+.elapsed {
+    float: right;
+    color: #999;
+    padding-left: 1em;
+}
+</style>
+    <title>behave testing result</title>
+</head>
+<body>	<div class="feature">
+	<span class="label fail">Feature:</span>
+	<span class="name">state machine testing</span>
+		<div class="children scenario" style="display: block;">
+			<span class="label fail">Scenario Outline</span>
+			<span class="name">test the Linked status -- @1.11 </span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户创建一个 "Linked" 的状态机</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户触发"CloudServiceApply"事件</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label fail">step:</span>
+				<span class="name">这个状态机的状态应该是"InService"</span>
+				<div class="children lable error">[u'Assertion Failed: ', u"Expected: 'InstanceApplying'", u"     but: was 'InService'", u'', u'Captured stdout:', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'', u'Captured logging:', u'INFO:pika.adapters.base_connection:Connecting to 172.16.2.16:5672', u'INFO:pika.adapters.blocking_connection:Created channel=1', u'INFO:pika.adapters.blocking_connection:Channel.close(0, Normal Shutdown)', u'INFO:pika.channel:Channel.close(0, Normal Shutdown)']</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

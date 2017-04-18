@@ -9,18 +9,24 @@ import time
 _MSG_TYPES = {"kicked": 2, "waiting": 1, "confirm": 6, "refreshstoken": 11, "error": 3, "overtime": 4, "resolution": 12,
              "apply": 9, "ready": 10, "address": 5, "changeResolution": 12}
 
+
 @step(u'这个请求应该被成功释放')
+# TODO: 释放实例时, 只检查了状态, 需要更加详细的校验
 def step_impl(context):
-    time.sleep(5)
-    cloud_db = CloudDB()
-    cid = context.scenario.deleted_instance.cid
-    real_status = cloud_db.get_instance_status_by_cid(cid)
-    assert_that(real_status, equal_to(None))
-    real_cid = cloud_db.check_cid_existed(cid)
-    assert_that(real_cid, equal_to(False))
+    real_status = ""
+    inst = context.scenario.current_instance
+    for i in range(20):
+        time.sleep(2)
+        cloud_db = CloudDB()
+        real_status = cloud_db.get_machine_status(inst.cid)
+        if str(real_status) == "Finished":
+            break
+    assert_that(real_status, equal_to("Finished"))
 
 
 use_step_matcher("re")
+
+
 @step(u'(?P<index>这个|最后一个|)请求的状态应该是"(?P<status>.*)"')
 def step_impl(context, index, status):
     if index == "这个":
@@ -85,8 +91,8 @@ def step_impl(context, ins_index, index):
         assert_that(-1, equal_to(expect_index))
 
 
-@step(u'这个(?:"(?P<type>deleted|wrong)")?实例应该收到"(?P<message_type>.*)"消息')
-def step_impl(context, message_type, type=None):
+@step(u'这个(?:"(?P<type>deleted|wrong)")?实例应该(?P<receive>收到|包含)"(?P<message_type>.*)"消息')
+def step_impl(context, message_type, receive, type=None):
     if type is None:
         if context.scenario.current_instance not in context.scenario.instances:  #
             if context.scenario.instances:
@@ -96,10 +102,16 @@ def step_impl(context, message_type, type=None):
         inst = context.scenario.current_instance
     else:
         inst = context.scenario.deleted_instance
-    for i in range(60):
-        time.sleep(2)
-        type_num = inst.messages[-1]['operation']
-        if _MSG_TYPES[message_type] == type_num:
-            break
-
-    assert_that(_MSG_TYPES[message_type], equal_to(type_num))
+    if receive == "收到":
+        for i in range(60):
+            time.sleep(2)
+            type_num = inst.messages[-1]['operation']
+            if _MSG_TYPES[message_type] == type_num:
+                break
+        assert_that(_MSG_TYPES[message_type], equal_to(type_num))
+    elif receive == "包含":
+        for msg in context.scenario.current_instance.messages:
+            if _MSG_TYPES[message_type] == msg['operation']:
+                assert_that(1, equal_to(1))
+                return
+        assert_that(1, equal_to(0))

@@ -1,11 +1,11 @@
-Feature: start and stop instances in loop
+Feature: 是的发生地方
 
-  Scenario: start and stop the instance in a short time
-    Given I start and stop the instance in the short time for "3000" times
-    When I request a app
-    And I wait "2000" ms
-    Then the status of instance should be "4"
-    And the instance num of "xiamatest" should be "501"
+  Scenario: 申请实例
+    Given 玩家通过租户"xiamatest"注册一个用户
+#    When I request a app
+#    And I wait "2000" ms
+#    Then the status of instance should be "4"
+#    And the instance num of "xiamatest" should be "501"
 
 
 

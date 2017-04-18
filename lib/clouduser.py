@@ -6,6 +6,7 @@ from cloudrequest import CloudRequest
 import time
 
 
+
 class CloudUser(object):
 
     def __init__(self, user, utoken, access_key='9599e53c'):

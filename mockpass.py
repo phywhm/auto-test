@@ -56,7 +56,7 @@ class MockHandler(BaseHTTPRequestHandler):
                     self.response['response'] = {'code': 0, 'success': False, 'serviceId': 0, 'state': 'NoIdleInstance'}
                 else:
                     que.append(serviceId)
-                    self.response['response'] = {'code': 0, 'success': True, 'serviceId': serviceId, 'state': ''}
+                    self.response['response'] = {'code': 0, 'success': True, 'serviceId': serviceId, 'state': 'Preparing'}
                     t = threading.Thread(target=self.notify_instance, args=(serviceId, "01",))
                     t.start()
         elif datas['operation'] == "com.haima.cloudplayer.controller.instance.release":
@@ -134,8 +134,8 @@ class MockHandler(BaseHTTPRequestHandler):
         time.sleep(int(intervel)/1000)
         params = clouddata.generate_comm_request(203)
         params.data = clouddata.generate_instance_info(cid, status)
-        print params
-        common.run_request("http://" + self.client_address[0] + ":8081/s/rest/api", method="POST", commparams=params)
+        print "=======", params, self.client_address
+        common.run_request("http://" + self.client_address[0] + ":8010/rest/api", method="POST", commparams=params)
 
 
 if __name__ == "__main__":

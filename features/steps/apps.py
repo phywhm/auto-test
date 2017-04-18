@@ -34,10 +34,11 @@ def step_impl(context, pkg_name=None):
         context.scenario.instances.remove(context.scenario.current_instance)
 
 
-@step(u'用户申请一个(?:"(?P<pkg_name>random|wrong|.*)")?实例根据以下参数:')
+@step(u'用户申请一个(?:"(?P<pkg_name>random|wrong|.*)")?实例根据以下参数')
 def step_impl(context, pkg_name=None):
     if pkg_name is None:
-        pkg_name = random.choice(context.games)
+        #pkg_name = random.choice(context.games)
+        pkg_name = "tests.testset." + formatdata.random_str(5)
     elif pkg_name == "random":
         pkg_name = "tests.testset." + formatdata.random_str(5)
     elif pkg_name == "wrong":
@@ -49,7 +50,7 @@ def step_impl(context, pkg_name=None):
     for row in context.table:
         params[row['key']] = row['value']
 
-    context.scenario.current_instance = context.scenario.current_user.start_instance(pkg_name, **params)
+    context.scenario.current_instance = context.scenario.current_user.start_instance(pkg_name, params)
     context.scenario.instances.append(context.scenario.current_instance)
 
     if pkg_name.lower().startswith("noapp"):
