@@ -17,9 +17,11 @@ def step_impl(context, access_key):
     user = "xTest" + formatdata.random_str(4)
     context.scenario.current_user = CloudUser(user, "password", access_key)
     context.scenario.users.append(context.scenario.current_user)
+    context.scenario.order_id = cloud_db.get_order_by_accesskey(access_key)
+
     if access_key not in context.scenario.appids:
-        #cloud_db.update_access_limit(access_key)
-        cloud_redis.set_value("cloudservice-count-12", "500")
+        cloud_db.set_concurrency_by_accesskey(access_key, 1000)
+        cloud_redis.set_value("cloudservice-count-" + context.scenario.order_id, "500")
         context.scenario.appids.append(access_key)
         time.sleep(2)
 

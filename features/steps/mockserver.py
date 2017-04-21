@@ -14,6 +14,12 @@ def step_impl(context, num):
     params = {"operation": "test.change.params", "max_num": num}
     common.run_request(context.mock_server, "POST", params)
 
+@step(u'设置paas中"{router_id}"路由的实例个数为"{num}"')
+def step_impl(context, router_id, num):
+    num = int(num)
+    params = {"operation": "test.change.params", "router_max_num": {router_id: num }}
+    context.scenarios.paas_request = common.run_request(context.mock_server, "POST", params)
+
 
 @step(u'设置paas的回调时间为"{num}"')
 def step_impl(context, num):
@@ -43,15 +49,15 @@ def step_impl(context):
 # TODO: mockPaas脚本还没有实现这部分, mockpaas返回operations记录并开始不记录
 @step(u'获取paas收到的请求')
 def step_impl(context):
-    params = {"operation": "test.record.operation"}
-    common.run_request(context.mock_server, "POST", params)
+    params = {"operation": "test.get.operation"}
+    context.scenarios.paas_request = common.run_request(context.mock_server, "POST", params)
 
 
 use_step_matcher("re")
 
 
-@step(u'paas收到的请求中应该(?P<key>不)?包含"(?P<operation>.*)"的请求')
-def step_impl(context, key, operation):
+@step(u'paas收到的请求中应该(?P<key>不)?包含"(?P<operation>.*)"的请求(?:"(?P<num>[0-9]+)"次)?')
+def step_impl(context,key, operation, num):
     contain = False
     for request in context.scenario.paas_request:
         if request['operation'] == operation:

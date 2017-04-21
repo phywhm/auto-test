@@ -91,8 +91,8 @@ def step_impl(context, ins_index, index):
         assert_that(-1, equal_to(expect_index))
 
 
-@step(u'这个(?:"(?P<type>deleted|wrong)")?实例应该(?P<receive>收到|包含)"(?P<message_type>.*)"消息')
-def step_impl(context, message_type, receive, type=None):
+@step(u'这个(?:"(?P<type>deleted|wrong)")?实例(?P<whether>不)?应该(?P<receive>收到|包含)"(?P<message_type>.*)"消息')
+def step_impl(context, type, whether,receive, message_type ):
     if type is None:
         if context.scenario.current_instance not in context.scenario.instances:  #
             if context.scenario.instances:

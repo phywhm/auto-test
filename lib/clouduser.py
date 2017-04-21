@@ -4,9 +4,9 @@
 from base.baseinfo import BaseInfo
 from cloudrequest import CloudRequest
 import time
+import xtestlogger
 
-
-
+logger = xtestlogger.get_logger(__name__)
 class CloudUser(object):
 
     def __init__(self, user, utoken, access_key='9599e53c'):
@@ -20,7 +20,9 @@ class CloudUser(object):
         cloud_request = CloudRequest(self, countly, **kargs)
         cloud_request.get_cid(package_name)
 
-    def start_instance(self, package_name, countly=False, status=None ,kargs={}):
+    def start_instance(self, package_name, countly=False, status=None ,kargs=None):
+        if kargs is None:
+            kargs = {}
         cloud_request = CloudRequest(self, countly, kargs)
         kargs['pkgname'] = package_name
         if status is None:

@@ -107,13 +107,13 @@ class CloudDB(object):
         finally:
             self.__close()
 
-    def get_key(self, access_key):
+    def get_ctoken_key(self, access_key):
         result = None
         try:
             self.__connect_db()
             self.cur = self.conn.cursor()
-            selectsql = "select apin_appkey from tb_app_info where apin_appid='%s'" % (access_key)
-            self.conn.select_db("saas_auth")
+            selectsql = "select ctokey_key from t_cloud_service_product where access_key='%s';" %(access_key)
+            self.conn.select_db(CONFIG.TENANT_DB)
             rows_num = self.cur.execute(selectsql)
             if rows_num >= 1:
                 result = self.cur.fetchone()[0]
@@ -174,7 +174,7 @@ class CloudDB(object):
             self.cur = self.conn.cursor()
             selectsql = "select status from t_cloud_service_channel where id=%s" %(cid)
             print selectsql
-            self.conn.select_db("db_service_core_test")
+            self.conn.select_db(CONFIG.CORE_DB)
             rows_num = self.cur.execute(selectsql)
             if rows_num >= 1:
                 result = self.cur.fetchone()[0]
@@ -190,7 +190,7 @@ class CloudDB(object):
             self.cur.execute(
                 "SELECT `AUTO_INCREMENT` FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='db_service_core_test' AND TABLE_NAME='t_cloud_service_channel';")
             cid =  self.cur.fetchone()[0]
-            self.conn.select_db("db_service_core_test")
+            self.conn.select_db(CONFIG.CORE_DB)
             selectsql = "insert into t_cloud_service_channel (`cloudservice_product_id`,`paas_service_id`, `status`) VALUES ('1','9-%s','%s');" % (cid,
             status)
             self.cur.execute(selectsql)
@@ -201,6 +201,41 @@ class CloudDB(object):
             self.__close()
 
 
+    def get_order_by_accesskey(self, access_key):
+        result = None
+        try:
+            self.__connect_db()
+            self.cur = self.conn.cursor()
+
+            self.conn.select_db(CONFIG.TENANT_DB)
+            selectsql = "select cloud_service_order_id from t_cloud_service_product where access_key='%s';" %(access_key)
+            self.cur.execute(selectsql)
+            result = self.cur.fetchone()[0]
+            return str(result)
+        finally:
+            self.__close()
+
+
+    def set_concurrency_by_accesskey(self, access_key, limit):
+        result = None
+        try:
+            self.__connect_db()
+            self.cur = self.conn.cursor()
+
+            self.conn.select_db(CONFIG.TENANT_DB)
+            selectsql = "select cloud_service_order_id from t_cloud_service_product where access_key='%s';" % (access_key)
+            self.cur.execute(selectsql)
+            result = self.cur.fetchone()[0]
+            if result is not None:
+                print("Get order {order} by access key: {access}".format(order=result, access=access_key))
+                selectsql = "update t_cloud_service_order set concurrency='%s' where id='%s';" % (limit, result)
+                self.cur.execute(selectsql)
+                self.conn.commit()
+            else:
+                print("Can not get order by access key: {access}".format(access=access_key))
+        finally:
+            self.__close()
+
 if __name__ == "__main__":
     mydb =  CloudDB("172.16.2.16")
-    print mydb.init_machine("Created")
+    print mydb.set_concurrency_by_accesskey("xiamatest",100)

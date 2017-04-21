@@ -121,7 +121,7 @@ class CloudRequest(object):
             self.sdk_type = int(kargs['os_type'])
         else:
             #self.sdk_type = formatdata.random_int(1, 5)
-            self.sdk_type = 2 #random.choice((2, 3))
+            self.sdk_type = 3 #random.choice((2, 3))
 
         # generate the  request body
         params = clouddata.generate_comm_request(ACTION_DID_REGISTER, self.sdk_type, self.protocol)
@@ -205,6 +205,8 @@ class CloudRequest(object):
         kargs['cid'] = self.cid
         if kargs['confirm'] == 0:
             logger.info("cid-{cid}  request the instance".format(cid=self.cid))
+        else:
+            logger.info("cid-{cid}  confirm the instance".format(cid=self.cid))
         # get cloud service can get the default resolution if data have no key
         # if 'resolution' not in kargs: kargs['resolution'] = 1
 
@@ -301,7 +303,7 @@ class CloudRequest(object):
         t3.setDaemon(False)
         t3.start()
         t3.join()
-
+        logger.info("=============%s" % (auto_confirm))
         t2 = threading.Thread(target=self.recv_data, args=(auto_confirm, ping, ))
         t2.setDaemon(False)
         t2.start()
@@ -330,10 +332,11 @@ class CloudRequest(object):
                 if i == 20:
                     i = 0
                     if ping:
-                        self.socket.ping()
+                        pass
+                        #self.socket.ping()
                 try:
                     data = self.socket.recv()
-                except Exception:
+                except WebSocketTimeoutException:
                     continue
                 try:
                     jsondata = json.loads(data)
@@ -348,7 +351,7 @@ class CloudRequest(object):
                     logger.info("cid-{cid}  Waiting for the instance".format(cid=self.cid))
                     self.cloud_status.waiting = True
                     if auto_confirm:
-                        self.get_instance(confirm=1)
+                        self.get_instance({'confirm': 1})
                     self.cloud_status.status = INSTANCE_IN_QUEUE
                 if operation == 10:
                     self.cloud_status.instance = True
@@ -396,7 +399,8 @@ class CloudRequest(object):
                     self.socket = None
                     if self.player:
                         self.player.close()
-        except WebSocketConnectionClosedException:
+        except WebSocketConnectionClosedException as e:
+            logger.exception(e.message)
             logger.warning("cid-%s websocket disconnect from server; instance status: %s" % (self.cid, self.cloud_status.status))
         except Exception as e:
             logger.exception(e.message)
@@ -410,6 +414,7 @@ class CloudRequest(object):
                 self.timer.cancel()
 
     def start_instance(self, kargs):
+        logger.info("+++++++++%s" %(kargs))
         if 'confirm' in kargs:
             auto_confirm = kargs['confirm']
         else:

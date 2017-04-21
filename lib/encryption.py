@@ -119,7 +119,7 @@ def hexstring_2_byte(key):
 
 def generate_ctoken(context):
     key_db = CloudDB()
-    key = key_db.get_key(context.client.accessKeyID)
+    key = key_db.get_ctoken_key(context.client.accessKeyID)
     raw = context.data.userInfo.uid + context.data.userInfo.uToken + context.data.pkgName + context.client.accessKeyID + str(
         context.client.channel)
     block_size = AES.block_size

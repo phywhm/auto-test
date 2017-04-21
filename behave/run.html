@@ -74,23 +74,30 @@
     <title>behave testing result</title>
 </head>
 <body>	<div class="feature">
-	<span class="label fail">Feature:</span>
-	<span class="name">state machine testing</span>
+	<span class="label pass">Feature:</span>
+	<span class="name">申请实例</span>
 		<div class="children scenario" style="display: block;">
-			<span class="label fail">Scenario Outline</span>
-			<span class="name">test the Linked status -- @1.11 </span>
+			<span class="label pass">Scenario</span>
+			<span class="name">当实例状态是InstanceApplying, 重复申请实例</span>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">用户创建一个 "Linked" 的状态机</span>
+				<span class="name">玩家通过租户"xiamatest"注册一个用户</span>
 			</div>
 			<div class="children step" style="display: block;">
 				<span class="label pass">step:</span>
-				<span class="name">用户触发"CloudServiceApply"事件</span>
+				<span class="name">设置paas不返回回调地址</span>
 			</div>
 			<div class="children step" style="display: block;">
-				<span class="label fail">step:</span>
-				<span class="name">这个状态机的状态应该是"InService"</span>
-				<div class="children lable error">[u'Assertion Failed: ', u"Expected: 'InstanceApplying'", u"     but: was 'InService'", u'', u'Captured stdout:', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'select status from t_cloud_service_channel where id=793', u'', u'Captured logging:', u'INFO:pika.adapters.base_connection:Connecting to 172.16.2.16:5672', u'INFO:pika.adapters.blocking_connection:Created channel=1', u'INFO:pika.adapters.blocking_connection:Channel.close(0, Normal Shutdown)', u'INFO:pika.channel:Channel.close(0, Normal Shutdown)']</div>
+				<span class="label pass">step:</span>
+				<span class="name">用户申请一个实例</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户重复申请该实例</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">这个请求的状态应该是"InstanceApplying"</span>
 			</div>
 		</div>
 	</div>

@@ -20,7 +20,9 @@ Feature: 申请实例
       |    key      |  value  |
       | playingTime |  90000  |
     Then 这个请求的状态应该是"InService"
-    When 等待"90000"毫秒
+    When 等待"70000"毫秒
+    Then 这个请求的状态应该是"InService"
+    When 等待"20000"毫秒
     Then 这个请求的状态应该是"Finished"
     And 这个实例应该收到"timeover"消息
 

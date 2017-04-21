@@ -21,19 +21,18 @@ def step_impl(context):
 
 
 @step(u'设置接入商"{access_key}"的实例上限和已用是个个数分别为"{limit}"和"{count}"')
-def step_impl(context, limit, count, access_key):
+def step_impl(context, access_key, limit, count):
     cloud_db = CloudDB()
-    # limit = int(limit)
-    # count = int(count)
     cloud_redis = CloudRedis()
-    cloud_redis.set_value("cloudservice-count-12", count)
+    cloud_db.set_concurrency_by_accesskey(access_key, limit)
+    cloud_redis.set_value("cloudservice-count-" + context.scenario.order_id, count)
 
 
 @step(u'接入商"{access_key}"已占用的实例个数应该为"{num}"')
 def step_impl(context, access_key, num):
     time.sleep(2)
     cloud_redis = CloudRedis()
-    instance_num = cloud_redis.get_value("cloudservice-count-12")
+    instance_num = cloud_redis.get_value("cloudservice-count-" + context.scenario.order_id)
     if num == "default":
         assert_that(instance_num, equal_to('500'))
     else:

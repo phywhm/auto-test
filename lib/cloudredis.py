@@ -70,7 +70,7 @@ if __name__ == "__main__":
     #    if cloud_redis.get_ttl(key) is not None:
     #        print key, cloud_redis.get_ttl(key)
     #cloud_redis.delete_keys("saas_access_fail_message_to_*")
-    for key in cloud_redis.get_keys("channel-context-467"):
+    for key in cloud_redis.get_keys("channel-context-828"):
         print key,cloud_redis.get_value(key)
         #cloud_redis.set_value("cloudservice-count-12", "244")
         #cloud_redis.delete_keys("channel-context*")

@@ -1,46 +1,49 @@
-Feature: the feature on access
+Feature: 用户长链接
 """
     receive and send data via access
 """
 
-  Scenario: disconnet WebSocket for less 1 minute
-    Given I registry an user with "xiamatest" access key
-    Given I update the instance limit to 501 and count to 500 on "xiamatest" access key
-    Given I request a "random" app
-    Then the status of instance should be "4"
-    When I disconnet the websocket of instance for "50" seconds
-    And I reconnect the websocket of instance
-    And I wait "20000" ms
-    Then the status of instance should be "4"
+  @smoke
+  Scenario: 断开长链接不超时, 实例不被释放
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置接入商"xiamatest"的实例上限和已用是个个数分别为"501"和"500"
+    Given 用户申请一个"random"实例
+    Then 这个请求的状态应该是"InService"
+    When 用户断开实例的长链接持续"50"秒
+    And 用户重连实例的长链接
+    And 等待"20000"毫秒
+    Then 这个请求的状态应该是"InService"
 
+  @smoke
+  Scenario: 断开长链接超过1分钟, 实例被释放
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置接入商"xiamatest"的实例上限和已用是个个数分别为"501"和"500"
+    Given 用户申请一个"random"实例
+    Then 这个请求的状态应该是"InService"
+    When 用户断开实例的长链接持续"70"秒
+    Then 这个请求应该被成功释放
 
-  Scenario: disconnet WebSocket for more than 1 minute
-    Given I registry an user with "xiamatest" access key
-    Given I update the instance limit to 501 and count to 500 on "xiamatest" access key
-    Given I request a "random" app
-    Then the status of instance should be "4"
-    When I disconnet the websocket of instance for "70" seconds
-    Then the instance should be deleted successfully
+  @smoke
+  Scenario: 反复断开和重连长链接不超时, 实例不应该被释放
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置接入商"xiamatest"的实例上限和已用是个个数分别为"501"和"500"
+    Given 用户申请一个"random"实例
+    Then 这个请求的状态应该是"InService"
+    When 用户断开实例的长链接持续"20"秒
+    And 用户重连实例的长链接
+    And 等待"20000"毫秒
+    When 用户断开实例的长链接持续"40"秒
+    And 用户重连实例的长链接
+    Then 这个请求的状态应该是"InService"
+    When 用户断开实例的长链接持续"70"秒
+    Then 这个请求应该被成功释放
 
-  Scenario: disconnet WebSocket for several times
-    Given I registry an user with "xiamatest" access key
-    Given I update the instance limit to 501 and count to 500 on "xiamatest" access key
-    Given I request a "random" app
-    Then the status of instance should be "4"
-    When I disconnet the websocket of instance for "20" seconds
-    And I reconnect the websocket of instance
-    Then I wait "20000" ms
-    When I disconnet the websocket of instance for "40" seconds
-    And I reconnect the websocket of instance
-    Then the status of instance should be "4"
-    When I disconnet the websocket of instance for "70" seconds
-    Then the instance should be deleted successfully
-
-  Scenario: play the game without ping message
-    Given I registry an user with "xiamatest" access key
-    Given I update the instance limit to 501 and count to 500 on "xiamatest" access key
+  @smoke
+  Scenario: 如果SDK不发送ping消息, 实例会被服务端释放
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置接入商"xiamatest"的实例上限和已用是个个数分别为"501"和"500"
     When I request an "random" app with
-      |    key    |      value        |
-      |    ping    |                 |
-    Then I wait "60000" ms for overtime
-    Then the instance should be deleted successfully
+      |    key    |    value     |
+      |    ping   |              |
+    Then 等待"30000"毫秒
+    Then 这个请求应该被成功释放
