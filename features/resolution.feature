@@ -11,7 +11,9 @@ Feature: 切换码率的各种场景
     Then 这个请求的状态应该是"InService"
     Then 这个实例应该包含"changeResolution"消息
     And 这个实例应该收到"address"消息
-    And 接入商"xiamatest"已占用的实例个数应该为"501"
+    When 等待"30000"毫秒
+    Then 接入商"xiamatest"已占用的实例个数应该为"501"
+
 
   @smoke
   Scenario: 当用户达到最大实例数时, 切换码率

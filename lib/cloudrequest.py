@@ -303,7 +303,6 @@ class CloudRequest(object):
         t3.setDaemon(False)
         t3.start()
         t3.join()
-        logger.info("=============%s" % (auto_confirm))
         t2 = threading.Thread(target=self.recv_data, args=(auto_confirm, ping, ))
         t2.setDaemon(False)
         t2.start()
@@ -332,8 +331,7 @@ class CloudRequest(object):
                 if i == 20:
                     i = 0
                     if ping:
-                        pass
-                        #self.socket.ping()
+                        self.socket.ping()
                 try:
                     data = self.socket.recv()
                 except WebSocketTimeoutException:
@@ -346,11 +344,10 @@ class CloudRequest(object):
                     continue
                 operation = json.loads(jsondata['payload'])['operation']
                 self.messages.append(json.loads(jsondata['payload']))
-                logger.info(jsondata)
                 if operation == 6:
                     logger.info("cid-{cid}  Waiting for the instance".format(cid=self.cid))
                     self.cloud_status.waiting = True
-                    if auto_confirm:
+                    if bool(auto_confirm):
                         self.get_instance({'confirm': 1})
                     self.cloud_status.status = INSTANCE_IN_QUEUE
                 if operation == 10:
@@ -399,8 +396,8 @@ class CloudRequest(object):
                     self.socket = None
                     if self.player:
                         self.player.close()
+                logger.info(jsondata)
         except WebSocketConnectionClosedException as e:
-            logger.exception(e.message)
             logger.warning("cid-%s websocket disconnect from server; instance status: %s" % (self.cid, self.cloud_status.status))
         except Exception as e:
             logger.exception(e.message)
@@ -414,9 +411,11 @@ class CloudRequest(object):
                 self.timer.cancel()
 
     def start_instance(self, kargs):
-        logger.info("+++++++++%s" %(kargs))
         if 'confirm' in kargs:
-            auto_confirm = kargs['confirm']
+            if kargs['confirm'] == "0" or kargs['confirm'] == "False":
+                auto_confirm = False
+            else:
+                auto_confirm = True
         else:
             auto_confirm = True
 

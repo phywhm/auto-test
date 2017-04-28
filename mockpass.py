@@ -48,6 +48,7 @@ class MockHandler(BaseHTTPRequestHandler):
                          "memo": "operation successfully"}
         datas = self.rfile.read(int(self.headers['content-length']))
         print(datas)
+        print(MockHandler.INSTANCE_QUEUE)
         datas = urllib.unquote(datas).decode("utf-8", 'ignore')  # 指定编码方式
         datas = json.loads(datas)
         all_instances = [x for item in MockHandler.INSTANCE_QUEUE.values() for x in item]
@@ -80,11 +81,12 @@ class MockHandler(BaseHTTPRequestHandler):
             self.response['operation'] = "com.haima.cloudplayer.controller.instance.release"
             self.response['response'] = True
 
-            if datas['param'] in que:
-                try:
-                    que.remove(int(datas['param']))
-                except:
-                    que.remove(datas['param'])
+            for que in MockHandler.INSTANCE_QUEUE.values():
+                if datas['param'] in que:
+                    try:
+                        que.remove(int(datas['param']))
+                    except:
+                        que.remove(datas['param'])
 
         elif datas['operation'] == "com.haima.cloudplayer.controller.instance.refreshSToken":
             current_operation = "refreshSToken"

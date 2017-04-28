@@ -51,25 +51,51 @@ Feature: 排队的基本功能
 
 
   @smoke
-  Scenario: 优先级相同时, 先入队的请求优先获取实例
+  Scenario: 优先级(2001)相同时, 先申请的请求优先获取实例
     Given 玩家通过租户"xiamatest"注册一个用户
     Given 设置paas的最大实例数为"1"
     Given 用户申请一个实例
     And 等待"2000"毫秒
     Given 用户申请一个实例根据以下参数:
       |    key   |  value |
-      | confirm  |  False  |
+      | confirm  |  0  |
+      | priority |  2001  |
     And 等待"1000"毫秒
     Given 用户申请一个实例根据以下参数:
       |    key   |  value |
-      | confirm  |  False |
+      | confirm  |  0 |
+      | priority |  2001  |
     And 等待"1000"毫秒
     Then 这个请求的状态应该是"WaitingConfirmEnqueue"
     When 用户确认请求入队
     And 用户确认第"1"个请求入队
     When 用户释放第"0"个实例
+    And 等待"10000"毫秒
     Then 最后一个请求的状态应该是"Enqueue"
-    And 第"1"个请求的状态应该是"InService"
+    And 第"0"个请求的状态应该是"InService"
+
+   @smoke
+  Scenario: 优先级(0)相同时, 先申请的请求优先获取实例
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置paas的最大实例数为"1"
+    Given 用户申请一个实例
+    And 等待"2000"毫秒
+    Given 用户申请一个实例根据以下参数:
+      |    key   |  value |
+      | confirm  |  0  |
+    And 等待"1000"毫秒
+    Given 用户申请一个实例根据以下参数:
+      |    key   |  value |
+      | confirm  |  0 |
+    And 等待"1000"毫秒
+    Then 这个请求的状态应该是"WaitingConfirmEnqueue"
+    When 用户确认请求入队
+    And 用户确认第"1"个请求入队
+    When 用户释放第"0"个实例
+    And 等待"10000"毫秒
+    Then 最后一个请求的状态应该是"Enqueue"
+    And 第"0"个请求的状态应该是"InService"
+
 
   @smoke
   Scenario: 排队的请求定期收到排队消息
@@ -225,7 +251,7 @@ Feature: 排队的基本功能
     Given 用户申请一个路由为"3,4"的实例
     Given 用户申请一个实例
     When 开始记录paas收到的请求
-    And 更新归还实例个数为"2"
+    And 更新路由"3,4"归还实例个数为"2"
     And 等待"5000"毫秒
     And 获取paas收到的请求
     Then paas收到的请求中应该包含"apply"的请求

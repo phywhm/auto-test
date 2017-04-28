@@ -50,5 +50,5 @@ if __name__ == "__main__":
     clouduser01 = CloudUser('cpd125212773', '029694a0fafac97c5435a1a97a909222', "xiamatest")
     clouduser01.start_instance("test.test.test")
     #clouduser01.state_machine_init("12122.121.12")
-    #time.sleep(20)
-    #clouduser01.stop_instances()
+    time.sleep(20)
+    clouduser01.stop_instances()

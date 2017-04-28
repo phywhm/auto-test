@@ -4,7 +4,7 @@
 from lib import common
 from behave import *
 from hamcrest import *
-
+from lib.cloudredis import CloudRedis
 
 use_step_matcher("parse")
 
@@ -51,6 +51,13 @@ def step_impl(context):
 def step_impl(context):
     params = {"operation": "test.get.operation"}
     context.scenarios.paas_request = common.run_request(context.mock_server, "POST", params)
+
+
+@step(u'更新路由"{router}"归还实例个数为"{num}"')
+def step_impl(context, router, num):
+    cloud_redis = CloudRedis()
+    cloud_redis.set_value('cloudservice-return-count-{router}'.format(router=router), num)
+
 
 
 use_step_matcher("re")
