@@ -30,11 +30,10 @@ Feature: 申请实例
   Scenario: 排队时间不计入游戏可玩儿时间
     Given 玩家通过租户"xiamatest"注册一个用户
     Then 设置paas的最大实例数为"1"
-    Then I change the max instance of paas to "1"
     Given 用户申请一个实例根据以下参数
       |    key      |  value  |
       | playingTime |  90000  |
-    Then I wait "1000" ms
+    Then 等待"1000"毫秒
     Given 用户申请一个实例根据以下参数
       |    key      |  value  |
       | playingTime |  90000  |

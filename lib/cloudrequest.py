@@ -328,7 +328,7 @@ class CloudRequest(object):
             i = 0
             while self.socket is not None:
                 i += 1
-                if i == 20:
+                if i == 15:
                     i = 0
                     if ping:
                         self.socket.ping()
@@ -396,7 +396,7 @@ class CloudRequest(object):
                     self.socket = None
                     if self.player:
                         self.player.close()
-                logger.info(jsondata)
+                logger.info("cid-{cid} {data}".format(cid=self.cid, data=jsondata))
         except WebSocketConnectionClosedException as e:
             logger.warning("cid-%s websocket disconnect from server; instance status: %s" % (self.cid, self.cloud_status.status))
         except Exception as e:
@@ -420,7 +420,10 @@ class CloudRequest(object):
             auto_confirm = True
 
         if 'ping' in kargs:
-            ping = kargs['ping']
+            if kargs['ping'] == "0" or kargs['ping'] == "False":
+                ping = False
+            else:
+                ping = True
         else:
             ping = True
 

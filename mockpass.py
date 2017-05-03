@@ -54,8 +54,25 @@ class MockHandler(BaseHTTPRequestHandler):
         all_instances = [x for item in MockHandler.INSTANCE_QUEUE.values() for x in item]
 
         if datas['operation'] == "com.haima.cloudplayer.controller.instance.apply":
-
             current_operation = "apply"
+        elif datas['operation'] == "com.haima.cloudplayer.controller.instance.release":
+            current_operation = "release"
+        elif datas['operation'] == "com.haima.cloudplayer.controller.instance.refreshSToken":
+            current_operation = "refreshSToken"
+        elif datas['operation'] == "com.haima.cloudplayer.controller.instance.updateResolution":
+            current_operation = "updateResolution"
+        elif datas['operation'] == "com.haima.cloudplayer.controller.router.getInterface":
+            current_operation = "getInterface"
+
+
+        if current_operation in MockHandler.ERROR_OPERATIONS:
+            MockHandler.ERROR_TIMES[current_operation] += 1
+            if MockHandler.ERROR_TIMES[current_operation] == MockHandler.ERROR_OPERATIONS[current_operation]:
+                MockHandler.ERROR_TIMES[current_operation] = 0
+                del MockHandler.ERROR_OPERATIONS[current_operation]
+            return
+
+        if datas['operation'] == "com.haima.cloudplayer.controller.instance.apply":
             serviceId = int(datas['param']['cidInfo']['info'].split(',')[0])
             if datas['param']['flagIfIds'] != "0":
                 serviceId =  datas['param']['flagIfIds'].split(',')[0] + "-" + datas['param']['cidInfo']['info'].split(',')[0]
@@ -77,7 +94,6 @@ class MockHandler(BaseHTTPRequestHandler):
                     t.start()
 
         elif datas['operation'] == "com.haima.cloudplayer.controller.instance.release":
-            current_operation = "release"
             self.response['operation'] = "com.haima.cloudplayer.controller.instance.release"
             self.response['response'] = True
 
@@ -89,39 +105,34 @@ class MockHandler(BaseHTTPRequestHandler):
                         que.remove(datas['param'])
 
         elif datas['operation'] == "com.haima.cloudplayer.controller.instance.refreshSToken":
-            current_operation = "refreshSToken"
             self.response['operation'] = "com.haima.cloudplayer.controller.instance.refreshSToken"
             self.response['response'] = True
             serviceId = datas['param']['serviceId']
             t = threading.Thread(target=self.notify_instance, args=(serviceId, "23"))
             t.start()
         elif datas['operation'] == "com.haima.cloudplayer.controller.instance.updateResolution":
-            current_operation = "updateResolution"
             self.response['operation'] = "com.haima.cloudplayer.controller.instance.updateResolution"
             self.response['response'] = True
             serviceId = datas['param']['serviceId']
             t = threading.Thread(target=self.notify_instance, args=(serviceId, "31"))
             t.start()
         elif datas['operation'] == "com.haima.cloudplayer.controller.router.getInterface":
-            current_operation = "getInterface"
             router = DEFAULT_ROUTE if CUSTOM_ROUTE is None else CUSTOM_ROUTE
             self.response['operation'] = 'com.haima.cloudplayer.controller.router.getInterface'
             self.response['response'] = {"flagIfIds": router}
-
 
         elif datas['operation'] == "test.change.params":
             if 'max_num' in datas:
                 CUSTOM_MAX_INSTACNE = int(datas['max_num'])
             if 'callback_interval' in datas:
                 CUSTOM_CALLBACK_TIME = int(datas['callback_interval'])
-            if 'error_response' in datas:
-                MockHandler.ERROR_OPERATIONS = json.loads(datas['error_operations'])
+            if 'error_operations' in datas:
+                MockHandler.ERROR_OPERATIONS = datas['error_operations']
             if 'custom_router' in datas:
                 CUSTOM_ROUTE = datas['custom_router']
             if "router_max_num" in datas:
                 MockHandler.ROUTERS_MAP.update(datas['router_max_num'])
-                print MockHandler.ROUTERS_MAP
-
+                print(MockHandler.ROUTERS_MAP)
 
         elif datas['operation'] == "test.unset.params":
             if datas['param'] == "max_num" or datas['param'] == "all":
@@ -149,13 +160,6 @@ class MockHandler(BaseHTTPRequestHandler):
         if MockHandler.RECORD:
             MockHandler.OPERATIONS.append(datas)
 
-        if current_operation in MockHandler.ERROR_OPERATIONS:
-            MockHandler.ERROR_TIMES[current_operation] += 1
-            if MockHandler.ERROR_TIMES[current_operation] == MockHandler.ERROR_OPERATIONS[current_operation]:
-                MockHandler.ERROR_TIMES[current_operation] = 0
-                del MockHandler.ERROR_OPERATIONS[current_operation]
-            return
-
 
 
         self.send_myresponse(json.dumps(self.response))
@@ -180,7 +184,7 @@ class MockHandler(BaseHTTPRequestHandler):
         time.sleep(int(intervel)/1000)
         params = clouddata.generate_comm_request(203)
         params.data = clouddata.generate_instance_info(cid, status)
-        print("=======", params, self.client_address)
+        print("cid-%s %s" %(cid ,params))
         common.run_request("http://" + self.client_address[0] + ":8010/rest/api", method="POST", commparams=params)
 
 

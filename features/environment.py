@@ -4,6 +4,7 @@
 from lib import configuration as C
 from lib import common
 import time
+from lib.cloudredis import CloudRedis
 
 def before_scenario(context, scenario):
     scenario.current_user = None
@@ -33,7 +34,8 @@ def after_scenario(context, scenario):
     params = {"operation": "test.unset.params", "param": "all"}
     common.run_request(context.mock_server, "POST", params)
 
-
+    #cloud_redis = CloudRedis()
+    #cloud_redis.delete_keys("*")
 
 
 def before_all(context):

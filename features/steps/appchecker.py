@@ -6,8 +6,7 @@ from behave import *
 from hamcrest import *
 import time
 
-_MSG_TYPES = {"kicked": 2, "waiting": 1, "confirm": 6, "refreshstoken": 11, "error": 3, "overtime": 4, "resolution": 12,
-             "apply": 9, "ready": 10, "address": 5, "changeResolution": 12}
+_MSG_TYPES = {"kicked": 2, "waiting": 1, "confirm": 6, "refreshstoken": 11, "error": 3, "timeover": 4, "resolution": 12, "apply": 9, "ready": 10, "address": 5, "changeResolution": 12}
 
 
 @step(u'这个请求应该被成功释放')
@@ -78,6 +77,7 @@ def step_impl(context, ins_index, index):
 @step(u'第"(?P<ins_index>[0-9]+)"个请求的排队位置应该是"(?P<index>[0-9]+)"')
 def step_impl(context, ins_index, index):
     time.sleep(60)
+    ins_index = int(ins_index)
     messages = context.scenario.instances[ins_index].messages
     wait_messages =[]
     for message in messages:
@@ -112,6 +112,13 @@ def step_impl(context, type, whether,receive, message_type ):
     elif receive == "包含":
         for msg in context.scenario.current_instance.messages:
             if _MSG_TYPES[message_type] == msg['operation']:
+                if whether is None:
+                    assert_that(1, equal_to(1))
+                else:
+                    assert_that(1, equal_to(0))
+                break
+        else:
+            if whether is None:
+                assert_that(1, equal_to(0))
+            else:
                 assert_that(1, equal_to(1))
-                return
-        assert_that(1, equal_to(0))

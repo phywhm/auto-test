@@ -84,7 +84,7 @@ def step_impl(context, router, pkg_name):
         context.scenario.instances.remove(context.scenario.current_instance)
 
     time.sleep(10)
-    params = {"operation": "test.unset.route", "custom_router": router}
+    params = {"operation": "test.unset.params", "param": 'custom_router'}
     common.run_request(context.mock_server, "POST", params)
 
 

@@ -36,8 +36,8 @@ class CloudDB(object):
         try:
             self.__connect_db()
             self.cur = self.conn.cursor()
-            selectsql = "select instance_id from tb_cid_instance_pool where cid=%s" %(cid)
-            self.conn.select_db("saas_core")
+            selectsql = "select paas_service_id from t_cloud_service_channel where id=%s" % (cid)
+            self.conn.select_db(CONFIG.CORE_DB)
             """cur.execute 返回的是行数, 可以根据行数进行判断处理"""
             self.cur.execute(selectsql)
             result = self.cur.fetchone()[0]
@@ -173,7 +173,6 @@ class CloudDB(object):
             self.__connect_db()
             self.cur = self.conn.cursor()
             selectsql = "select status from t_cloud_service_channel where id=%s" %(cid)
-            print selectsql
             self.conn.select_db(CONFIG.CORE_DB)
             rows_num = self.cur.execute(selectsql)
             if rows_num >= 1:

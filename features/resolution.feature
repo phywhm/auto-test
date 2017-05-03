@@ -42,9 +42,9 @@ Feature: 切换码率的各种场景
     Given 用户申请一个"random"实例
     When 等待"2000"毫秒
     Then 这个请求的状态应该是"InService"
-    When 设置paas的错误响应次数为"1"
+    When 设置paas"updateResolution"操作的错误响应次数为"1"
     And 用户用"4"切换实例的码率
-    Then 这个请求的状态应该是"Finish"
+    Then 这个请求的状态应该是"Finished"
     And 接入商"xiamatest"已占用的实例个数应该为"500"
 
 
@@ -55,18 +55,18 @@ Feature: 切换码率的各种场景
     Then 这个请求的状态应该是"InService"
     When 设置paas不返回回调地址
     And 用户用"4"切换实例的码率
-    Then 这个请求的状态应该是"Finish"
+    Then 这个请求的状态应该是"Finished"
     And 接入商"xiamatest"已占用的实例个数应该为"500"
     
-  Scenario: 切换码率时, Paas没有回调刷新失败
+  Scenario: 切换码率时, Paas回调刷新失败
     Given 玩家通过租户"xiamatest"注册一个用户
     Given 用户申请一个"random"实例
     When 等待"2000"毫秒
     Then 这个请求的状态应该是"InService"
     When 设置paas不返回回调地址
     And 用户用"4"切换实例的码率
-    And 模拟paas回调实例的状态为"13"
-    Then 这个请求的状态应该是"Finish"
+    And 模拟paas回调实例的状态为"32"
+    Then 这个请求的状态应该是"Finished"
     And 接入商"xiamatest"已占用的实例个数应该为"500"
 
 

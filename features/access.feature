@@ -42,8 +42,8 @@ Feature: 用户长链接
   Scenario: 如果SDK不发送ping消息, 实例会被服务端释放
     Given 玩家通过租户"xiamatest"注册一个用户
     Given 设置接入商"xiamatest"的实例上限和已用是个个数分别为"501"和"500"
-    When I request an "random" app with
-      |    key    |    value     |
-      |    ping   |              |
+    Given 用户申请一个实例根据以下参数:
+      |    key   |  value |
+      | ping     |  False |
     Then 等待"30000"毫秒
     Then 这个请求应该被成功释放

@@ -40,10 +40,11 @@ Feature: all kinds of scenarios on Stoken
     Given 用户申请一个"random"实例
     When 等待"2000"毫秒
     Then 这个请求的状态应该是"InService"
-    When 设置paas的错误响应次数为"1"
+    When 设置paas"refreshSToken"操作的错误响应次数为"1"
     And 用户刷新实例的stoken
-    Then 这个请求的状态应该是"Finished"
     And 接入商"xiamatest"已占用的实例个数应该为"500"
+    Then 这个请求的状态应该是"Finished"
+
 
 
   Scenario: 刷新stoken时, Paas没有回调流地址
@@ -64,7 +65,7 @@ Feature: all kinds of scenarios on Stoken
     Then 这个请求的状态应该是"InService"
     When 设置paas不返回回调地址
     And 用户刷新实例的stoken
-    And 模拟paas回调实例的状态为"13"
+    And 模拟paas回调实例的状态为"24"
     Then 这个请求的状态应该是"Finished"
     And 接入商"xiamatest"已占用的实例个数应该为"500"
 
