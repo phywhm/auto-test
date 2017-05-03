@@ -1,2 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style rel="stylesheet" type="text/css">
+.scenario {
+    border: 1px solid #ccc;
+}
+
+.step {
+    border: 1px dashed #ccc;
+}
+
+.children {
+    display: none;
+    margin-left: 1.4em;
+}
+
+/* Containers */
+.feature, #errors {
+    border: 1px solid #ccc;
+    padding: 0.3em 0.2em;
+    margin: 0.2em 0;
+}
+
+.fail {
+    color: #f33 !important;
+    font-weight: bold;
+}
+.pass {
+    color: #393 !important;
+}
+.label {
+    padding: 2px 5px;
+    font-size: 0.75em;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    color: black;
+    background-color: #ddd;
+    border-radius: 3px;
+}
+.label.debug, .label.trace, .label.error, .label.keyword {
+    letter-spacing: 0;
+}
+.label.error, .label.fail, .label.pass, .label.warn {
+    color: #fff !important;
+    font-weight: bold;
+}
+.label.error, .label.fail {
+    background-color: #d9534f;
+}
+.label.pass {
+    background-color: #5cb85c;
+}
+
+.label.skip {
+    background-color: dodgerblue;
+}
+.label.warn {
+    background-color: #ec971f;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 0.75em;
+}
+
+.elapsed {
+    float: right;
+    color: #999;
+    padding-left: 1em;
+}
+</style>
+    <title>behave testing result</title>
+</head>
+<body>	<div class="feature">
+	<span class="label fail">Feature:</span>
+	<span class="name">用户长链接</span>
+		<div class="children scenario" style="display: block;">
+			<span class="label pass">Scenario</span>
+			<span class="name">断开长链接不超时, 实例不被释放</span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">玩家通过租户"xiamatest"注册一个用户</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">设置接入商"xiamatest"的实例上限和已用是个个数分别为"501"和"500"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户申请一个"random"实例</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">这个请求的状态应该是"InService"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户断开实例的长链接持续"50"秒</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户重连实例的长链接</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">等待"20000"毫秒</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">这个请求的状态应该是"InService"</span>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label fail">Scenario</span>
+			<span class="name">断开长链接超过1分钟, 实例被释放</span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">玩家通过租户"xiamatest"注册一个用户</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">设置接入商"xiamatest"的实例上限和已用是个个数分别为"501"和"500"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户申请一个"random"实例</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">这个请求的状态应该是"InService"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户断开实例的长链接持续"70"秒</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label fail">step:</span>
+				<span class="name">这个请求应该被成功释放</span>
+				<div class="children lable error">[u'Assertion Failed: ', u"Expected: 'Finished'", u"     but: was 'InService'", u'', u'Captured stdout:', u'Get order 12 by access key: xiamatest', u'Get order 12 by access key: xiamatest', u'', u'Captured logging:', u'INFO:lib.cloudrequest:cid-1530  request the instance', u'INFO:lib.cloudrequest:cid-1530  recieve the instance Address', u'INFO:lib.cloudrequest:cid-1530 {u\'ack\': 0, u\'to\': u\'1530\', u\'type\': 2, u\'mid\': u\'1493811215696\', u\'payload\': u\'{"code":0,"data":{"audioUrl":"rtmp://192.168.149.2201935/publishlive/mystreamaudio?st=TROJUlJgEsL9EeflV3FqEydfCwWn6ttjIX7EYQr6Hc0TDTWc91rBlIBLhDtv8BB0","countdownTime":60000,"inputUrl":"ws://192.168.149.220:7681/TROJUlJgEsL9EeflV3FqEydfCwWn6ttjIX7EYQr6Hc0TDTWc91rBlIBLhDtv8BB0","playingTime":3000000,"remindTime":300000,"videoUrl":"rtmp://192.168.149.2201935/publishlive/mystream?st=TROJUlJgEsL9EeflV3FqEydfCwWn6ttjIX7EYQr6Hc0TDTWc91rBlIBLhDtv8BB0"},"operation":5}\'}', u'WARNING:lib.cloudrequest:cid-1530 websocket disconnect from server; instance status: 2', u'WARNING:lib.cloudrequest:cid-1530 intance-status  True           False          False          None           ']</div>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label fail">Scenario</span>
+			<span class="name">反复断开和重连长链接不超时, 实例不应该被释放</span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">玩家通过租户"xiamatest"注册一个用户</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">设置接入商"xiamatest"的实例上限和已用是个个数分别为"501"和"500"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户申请一个"random"实例</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">这个请求的状态应该是"InService"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户断开实例的长链接持续"20"秒</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户重连实例的长链接</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">等待"20000"毫秒</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户断开实例的长链接持续"40"秒</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户重连实例的长链接</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">这个请求的状态应该是"InService"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户断开实例的长链接持续"70"秒</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label fail">step:</span>
+				<span class="name">这个请求应该被成功释放</span>
+				<div class="children lable error">[u'Assertion Failed: ', u"Expected: 'Finished'", u"     but: was 'InService'", u'', u'Captured stdout:', u'Get order 12 by access key: xiamatest', u'Get order 12 by access key: xiamatest', u'', u'Captured logging:', u'INFO:lib.cloudrequest:cid-1531  request the instance', u'INFO:lib.cloudrequest:cid-1531  recieve the instance Address', u'INFO:lib.cloudrequest:cid-1531 {u\'ack\': 0, u\'to\': u\'1531\', u\'type\': 2, u\'mid\': u\'1493811338074\', u\'payload\': u\'{"code":0,"data":{"audioUrl":"rtmp://192.168.238.1831935/publishlive/mystreamaudio?st=j0TyfhHXHcqmKZJB0QUsqDhIxaEkS6SGgnMoCTumnxXOaZo5e1qHA9KUQ5ScWhdw","countdownTime":60000,"inputUrl":"ws://192.168.238.183:7681/j0TyfhHXHcqmKZJB0QUsqDhIxaEkS6SGgnMoCTumnxXOaZo5e1qHA9KUQ5ScWhdw","playingTime":3000000,"remindTime":300000,"videoUrl":"rtmp://192.168.238.1831935/publishlive/mystream?st=j0TyfhHXHcqmKZJB0QUsqDhIxaEkS6SGgnMoCTumnxXOaZo5e1qHA9KUQ5ScWhdw"},"operation":5}\'}', u'WARNING:lib.cloudrequest:cid-1531 websocket disconnect from server; instance status: 2', u'WARNING:lib.cloudrequest:cid-1531 intance-status  True           False          False          None           ', u'WARNING:lib.cloudrequest:cid-1531 websocket disconnect from server; instance status: 2', u'WARNING:lib.cloudrequest:cid-1531 intance-status  True           False          False          None           ', u'WARNING:lib.cloudrequest:cid-1531 websocket disconnect from server; instance status: 2', u'WARNING:lib.cloudrequest:cid-1531 intance-status  True           False          False          None           ']</div>
+			</div>
+		</div>
+		<div class="children scenario" style="display: block;">
+			<span class="label fail">Scenario</span>
+			<span class="name">如果SDK不发送ping消息, 实例会被服务端释放</span>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">玩家通过租户"xiamatest"注册一个用户</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">设置接入商"xiamatest"的实例上限和已用是个个数分别为"501"和"500"</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">用户申请一个实例根据以下参数</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label pass">step:</span>
+				<span class="name">等待"30000"毫秒</span>
+			</div>
+			<div class="children step" style="display: block;">
+				<span class="label fail">step:</span>
+				<span class="name">这个请求应该被成功释放</span>
+				<div class="children lable error">[u'Assertion Failed: ', u"Expected: 'Finished'", u"     but: was 'InService'", u'', u'Captured stdout:', u'Get order 12 by access key: xiamatest', u'Get order 12 by access key: xiamatest', u'', u'Captured logging:', u'INFO:lib.cloudrequest:cid-1532  request the instance', u'INFO:lib.cloudrequest:cid-1532  recieve the instance Address', u'INFO:lib.cloudrequest:cid-1532 {u\'ack\': 0, u\'to\': u\'1532\', u\'type\': 2, u\'mid\': u\'1493811548488\', u\'payload\': u\'{"code":0,"data":{"audioUrl":"rtmp://192.168.5.1401935/publishlive/mystreamaudio?st=xPnRyGxFAawxVrk3guIO6StXQTOpBa1s4JPKGslZ9OaQvAlY7g8HU0m9einVUK98","countdownTime":60000,"inputUrl":"ws://192.168.5.140:7681/xPnRyGxFAawxVrk3guIO6StXQTOpBa1s4JPKGslZ9OaQvAlY7g8HU0m9einVUK98","playingTime":3000000,"remindTime":300000,"videoUrl":"rtmp://192.168.5.1401935/publishlive/mystream?st=xPnRyGxFAawxVrk3guIO6StXQTOpBa1s4JPKGslZ9OaQvAlY7g8HU0m9einVUK98"},"operation":5}\'}']</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
