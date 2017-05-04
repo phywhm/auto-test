@@ -26,3 +26,8 @@ def step_impl(context):
     talk_info = dict([(x['k'], x['v']) for x in context.output['interactiveTalkInfo']])
     for row in context.table:
         assert_that(talk_info, has_entry(row['key'],row['value']))
+
+@step(u'设置接入商"{bid}"的"{key}"配置值为"{value}"')
+def step_impl(context, bid, key, value):
+    cloud_db = CloudDB()
+    tenant_id = cloud_db.get_tenant_id_by_bid(bid)

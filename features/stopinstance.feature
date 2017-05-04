@@ -15,6 +15,7 @@ Scenario Outline: 模拟paas回调各种实例状态
     And 等待"2000"毫秒
     Then 这个实例应该收到"<message>"消息
     Then 这个请求的状态应该是"<instace_status>"
+    And 接入商"xiamatest"已占用的实例个数应该为"default"
     Examples:
       | status |  message  | instace_status |
       |   02   |   error   |    Finished    |
@@ -37,9 +38,10 @@ Scenario Outline: 模拟paas回调各种实例状态
     Then 用户申请一个状态为"Created"的实例
     When 用户通过"<method>"方法释放请求
     Then 这个请求应该被成功释放
-    And 接入商"xiamatest"的实例个数应该为"default"
+    And 接入商"xiamatest"已占用的实例个数应该为"default"
     When 用户申请一个实例
     Then 这个请求的状态应该是"InService"
+    And 这个实例不应该包含"confirm"消息
     Examples:
       | method |  status   |
       | stop   |    0      |
