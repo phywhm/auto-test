@@ -127,7 +127,7 @@ def generate_comm_request(action_type, sdk_type=None, protocol=None, did=None):
 def generate_data_info(**kargs):
     data_info = BaseInfo()
     for key, value in kargs.items():
-        if key in ['cid', 'sign', 'clientType', 'resolution', 'opType', 'clientType', 'playingTime', 'priority', 'confirm']:
+        if key in ['cid', 'sign', 'clientType', 'resolution', 'opType', 'clientType', 'playingTime', 'priority', 'confirm', 'bitRate']:
             setattr(data_info, key, value)
 
     return data_info

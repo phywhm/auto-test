@@ -21,10 +21,25 @@ class CloudMongo(object):
 
 
     def create_config_by_tenant_id(self, tenant_id, data):
+        config_tmp = { "_class": "com.haima.cloudplayer.tenantmgt.dal.mongo.model.CloudServiceProductConfigDo",
+                       "tenantId": 4,
+                       "envId": 0,
+                       "clientType": 0,
+                       "cloudServiceProductId": 0,
+                       "config":{}
+                       }
+        config_tmp["tenantId"] = int(tenant_id)
+        config_tmp['config'].update(data)
+        print config_tmp
         db = self.__use_mongo(CONFIG.CONFIG_DB,CONFIG.MONGO_USER, CONFIG.MONGO_PASSWORD)
         tmp_collection = db['CloudServiceProductConfig']
         tmp_collection.remove({"tenantId": int(tenant_id)})
-        tmp_collection.insert(data)
+        tmp_collection.insert(config_tmp)
+
+    def remove_config_by_tenant_id(self, tenant_id):
+        db = self.__use_mongo(CONFIG.CONFIG_DB, CONFIG.MONGO_USER, CONFIG.MONGO_PASSWORD)
+        tmp_collection = db['CloudServiceProductConfig']
+        tmp_collection.remove({"tenantId": int(tenant_id)})
 
     def remove(self, collection, params=None):
         if params is None:
@@ -49,12 +64,4 @@ class CloudMongo(object):
 
 if __name__ == "__main__":
     mongo = CloudMongo()
-    mongo.create_config_by_tenant_id(4,
-                                     { "_class": "com.haima.cloudplayer.tenantmgt.dal.mongo.model.CloudServiceProductConfigDo",
-                                      "tenantId": 4,
-                                      "envId": 0,
-                                      "clientType": 0,
-                                      "cloudServiceProductId": 0,
-                                      "config":
-                                          {"flagStartSpeedTest": True}
-                                      })
+    mongo.create_config_by_tenant_id(3, {"sdkConfig": {"revolveTime": "10000"}, "flagStartSpeedTest": True})

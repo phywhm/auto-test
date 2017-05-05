@@ -16,7 +16,7 @@ def step_impl(context, interval):
 
 @step(u'随机等待很小一段时间')
 def step_impl(context):
-    interval = formatdata.random_int(1, 1500)
+    interval = formatdata.random_int(1, 2000)
     time.sleep(int(interval)/1000)
 
 

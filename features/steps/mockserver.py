@@ -98,3 +98,15 @@ def step_impl(context,whether, operation, num):
     else:
         assert_that(contain, equal_to(False))
 
+@step(u'paas收到的"(?P<message_type>.*)"请求中"(?P<keys>.*)"字段值应该是"(?P<value>.*)"')
+def step_impl(context,message_type, keys, value):
+    params = {}
+    for request in context.scenario.paas_request:
+        if message_type in request['operation']:
+            params = request['param']
+
+    for key in keys.split("/"):
+        assert_that(params, has_key(key))
+        params = params[key]
+
+    assert_that(str(params), equal_to(value))

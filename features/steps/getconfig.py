@@ -2,7 +2,7 @@
 #-*- coding: UTF-8 -*-
 
 from lib.clouddb import CloudDB
-from lib.clouduser import CloudUser
+from lib.cloudmongo import CloudMongo
 from lib import common
 from behave import *
 from hamcrest import *
@@ -31,3 +31,9 @@ def step_impl(context):
 def step_impl(context, bid, key, value):
     cloud_db = CloudDB()
     tenant_id = cloud_db.get_tenant_id_by_bid(bid)
+    cloud_mongo = CloudMongo()
+    if key in ['showEstimateTime', 'appCallback']:
+        params = dict(((key,value)))
+    else:
+        params = {'sdkConfig': {key: value} }
+    cloud_mongo.create_config_by_tenant_id(tenant_id, params)

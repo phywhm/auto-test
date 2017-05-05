@@ -45,6 +45,18 @@ class CloudDB(object):
         finally:
             self.__close()
 
+    def get_tenant_id_by_bid(self, bid):
+        result = None
+        try:
+            self.__connect_db()
+            self.cur = self.conn.cursor()
+            selectsql = "SELECT id FROM t_tenant_info where bid = '%s'" % (bid)
+            self.conn.select_db(CONFIG.TENANT_DB)
+            self.cur.execute(selectsql)
+            result = self.cur.fetchone()[0]
+            return result
+        finally:
+            self.__close()
 
     def get_display_info(self, cid):
         result = None

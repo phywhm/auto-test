@@ -14,21 +14,12 @@ def step_impl(context):
     context.scenario.current_instance.get_instance({'confirm': 1})
 
 
-use_step_matcher('parse')
-@step(u'用户短时间内申请释放实例"{num}"次')
-def step_impl(context, num):
-    for x in range(1, int(num)):
-        context.execute_steps(u"""
-            Given 玩家通过租户"xiamatest"注册一个用户
-            Given 用户申请一个"random"实例
-            And 随机等待很小一段时间
-            And 用户释放实例
-            Then 这个请求的状态应该是"Finished"
-        """)
+
+use_step_matcher("re")
 
 
 
-@step(u'用户正常申请释放实例"{num}"次')
+@step(u'用户正常申请释放实例"(?P<num>[0-9]+)"次')
 def step_impl(context, num):
     for x in range(1, int(num)):
         context.execute_steps(u"""
@@ -39,7 +30,17 @@ def step_impl(context, num):
         """)
 
 
-use_step_matcher("re")
+
+@step(u'用户短时间内申请释放实例"(?P<num>[0-9]+)"次')
+def step_impl(context, num):
+    for x in range(1, int(num)):
+        context.execute_steps(u"""
+            Given 玩家通过租户"xiamatest"注册一个用户
+            Given 用户申请一个"random"实例
+            And 随机等待很小一段时间
+            And 用户释放实例
+            Then 这个请求的状态应该是"Finished"
+        """)
 
 
 @step(u'用户申请一个(?:"(?P<pkg_name>random|wrong|.*)")?实例')
