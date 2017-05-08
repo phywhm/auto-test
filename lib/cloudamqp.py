@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-
+import random
 
 import pika
 import configuration as CONFIG
 from base.cloud_message import CloudMessage
+from lib.base.msg_carrier import SingleMsg, GroupMsg
+
 
 class CloudAMQP(object):
     def __init__(self, host=None, port=5672, virtual_host="/", password="admin"):
@@ -144,6 +146,34 @@ class CloudAMQP(object):
         data = {"audioUrl":"rtmp://172.16.10.238:1935/publishlive/mystreamaudio?st=5350786d557539524e776754346b79614b7035693369626249335a5959516775","countdownTime":60000,"inputUrl": "ws://172.16.10.238:7681/5350786d557539524e776754346b79614b7035693369626249335a5959516775","playingTime":5732502,"remindTime":300000,"resolution":"2","sToken":"5350786d557539524e776754346b79614b7035693369626249335a5959516775","videoUrl":"rtmp://172.16.10.238:1935/publishlive/mystream?st=5350786d557539524e776754346b79614b7035693369626249335a5959516775"}
         msg.data = data
         self.send_msg_access(msg)
+
+    __mcExchanges = {
+        "about_msg": "exchange.msgcenter.pushmsg",
+        "client": "exchange.msgcenter.clientstate"
+    }
+
+    __mcRoutingKeys = {
+        "singMsg": "com.haima.cloudplayer.msgcenter.domain.message.MsgCarrier",
+        "groupMsg": "com.haima.cloudplayer.msgcenter.domain.message.GroupMsgCarrier"
+    }
+
+    def push_single_msg(self, cid, msg):
+        mq_property = pika.BasicProperties(
+            headers={'messageType': self.__mcRoutingKeys["singMsg"]})
+        mq_property.correlation_id = "single_msg_" + str(random.uniform(10000, 1000000))
+        body = SingleMsg(cid, msg)
+        channel = self.amqp_conn.channel()
+        channel.basic_publish(exchange=self.__mcExchanges["about_msg"], routing_key=self.__mcRoutingKeys["singMsg"], body=str(body), properties=mq_property)
+        channel.close()
+
+    def push_group_msg(self, group_list, msg):
+        mq_property = pika.BasicProperties(
+            headers={'messageType': self.__mcRoutingKeys["groupMsg"]})
+        mq_property.correlation_id = "group_msg_" + str(random.uniform(10000, 1000000))
+        body = GroupMsg(group_list, msg)
+        channel = self.amqp_conn.channel()
+        channel.basic_publish(exchange=self.__mcExchanges["about_msg"], routing_key=self.__mcRoutingKeys["groupMsg"], body=str(body), properties=mq_property)
+        channel.close()
 
 
 class CidEvent(object):

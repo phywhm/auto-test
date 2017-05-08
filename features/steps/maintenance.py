@@ -2,6 +2,9 @@
 #-*- coding: UTF-8 -*-
 
 from datetime import *
+
+from behave import step
+
 from lib.cloudtools import stop_service
 from lib.cloudtools import recover_server
 

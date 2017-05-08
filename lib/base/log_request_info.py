@@ -112,7 +112,7 @@ class LogRequest():
         12019
 
     def user_not_continue(self):
-
+        pass
 
     def wifi_to_4g(self):
         12018
@@ -121,14 +121,14 @@ class LogRequest():
 
     def  utoken_fail(self):
         pass
-    def get_instance(self):
-        用户校验成功
-        start isinstance
-        device_log
-
-    def 
-    def
-    def logger_
+    # def get_instance(self):
+    #     用户校验成功
+    #     start isinstance
+    #     device_log
+    #
+    # def
+    # def
+    # def logger_
     def loger_normal(self):
         print
 
@@ -175,6 +175,7 @@ class LogScenarios():
         pass
 
     def log_not_ready(self):
+        pass
 
 test = LogRequest(1)
 

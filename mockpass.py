@@ -189,6 +189,6 @@ class MockHandler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    server_address = ('', 8080)
+    server_address = ('127.0.0.1', 8080)
     server = HTTPServer(server_address, MockHandler)
     server.serve_forever()
