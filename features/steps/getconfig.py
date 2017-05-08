@@ -33,7 +33,11 @@ def step_impl(context, bid, key, value):
     tenant_id = cloud_db.get_tenant_id_by_bid(bid)
     cloud_mongo = CloudMongo()
     if key in ['showEstimateTime', 'appCallback']:
-        params = dict(((key,value)))
+        if value in ["False",  "false"]:
+            value = False
+        elif value in ['True', 'true']:
+            value = True
+        params = {key: bool(value)}
     else:
         params = {'sdkConfig': {key: value} }
     cloud_mongo.create_config_by_tenant_id(tenant_id, params)

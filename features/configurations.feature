@@ -152,15 +152,27 @@ Feature: saas server的配置
     Given 用户申请一个实例
     Then 最后一个请求的状态应该是"Finished"
 
+  # TODO: 预估时间的算法需要详细测试
   Scenario: 显示排队预估时间
     Given 玩家通过租户"xiamatest"注册一个用户
     Given 设置paas的最大实例数为"1"
     And 设置接入商"xiamatest"的"showEstimateTime"配置值为"True"
     Given 用户申请一个实例
     When 等待"1000"毫秒
+    Given 用户申请一个实例
     Then 最后一个请求的状态应该是"Enqueue"
+    And 这个请求的"waiting"消息中应该包含"timeStr"字段
 
-    And 这个请求的"waiting"消息中"countdownTime"字段值应该是"60000"
+
+  Scenario: 不显示排队预估时间
+    Given 玩家通过租户"xiamatest"注册一个用户
+    Given 设置paas的最大实例数为"1"
+    And 设置接入商"xiamatest"的"showEstimateTime"配置值为"False"
+    Given 用户申请一个实例
+    When 等待"1000"毫秒
+    Given 用户申请一个实例
+    Then 最后一个请求的状态应该是"Enqueue"
+    And 这个请求的"waiting"消息中不应该包含"timeStr"字段
 
 
   Scenario: 修改无操作超时时长

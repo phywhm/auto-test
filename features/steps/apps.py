@@ -118,10 +118,10 @@ def step_impl(context, router, pkg_name):
 
 @step(u'用户申请一个状态为"(?P<status>.*)"的实例')
 def step_impl(context,  status):
-    if context.games is None:
-        pkg_name = "saas.test." + formatdata.random_str(5)
-    else:
-        pkg_name = random.choice(context.games)
+    #if context.games is None:
+    #    pkg_name = "saas.test." + formatdata.random_str(5)
+    #else:
+    pkg_name = "saas.test." + formatdata.random_str(5)
 
     context.scenario.current_instance = context.scenario.current_user.start_instance(pkg_name, status=status)
     context.scenario.instances.append(context.scenario.current_instance)
@@ -143,11 +143,16 @@ def step_impl(context, index=None):
 def step_impl(context, index=None):
     if index is None:
         if context.scenario.current_instance not in context.scenario.instances:
-            context.scenario.current_instance = context.scenario.instances[-1]
+            try:
+                context.scenario.current_instance = context.scenario.instances[-1]
+            except:
+                pass
         context.scenario.current_instance.stop_instance()
-        context.scenario.instances.remove(context.scenario.current_instance)
+        if context.scenario.current_instance in context.scenario.instances:
+            context.scenario.instances.remove(context.scenario.current_instance)
         context.scenario.deleted_instance = context.scenario.current_instance
-        context.scenario.deleted_instances.append(context.scenario.current_instance)
+        if context.scenario.current_instance not in context.scenario.instances:
+            context.scenario.deleted_instances.append(context.scenario.current_instance)
     else:
         index = int(index)
         inst = context.scenario.instances[index]
