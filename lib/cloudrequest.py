@@ -50,7 +50,7 @@ class CloudStatus(object):
         self.waiting = False
         self.instance = False
         self.release = None
-        self.status = INSTANCE_NOT_REQUEST
+        self.status = INSTANCE_SUCCESS_REQUEST
 
 
 class CloudRequest(object):

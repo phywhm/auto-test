@@ -142,10 +142,10 @@ def step_impl(context, index, message_type, whether, key):
             break
 
     tmp_msg = tmp_msg['data']
-    if key in tmp_msg:
-        assert_that(tmp_msg[key], equal_to(int(value)))
+    if whether is None:
+        assert_that(tmp_msg, has_key(key))
     else:
-        assert_that(False, equal_to(True))
+        assert_that(tmp_msg, is_not(has_key(key)))
 
 @step(u'(?P<index>这个|最后一个|)请求的"(?P<message_type>.*)"消息中"(?P<key>.*)"字段值应该是"(?P<value>.*)"')
 def step_impl(context, index, message_type,key, value):
