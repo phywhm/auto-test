@@ -5,6 +5,8 @@ from lib import configuration as C
 from lib import common
 import time
 from lib.cloudredis import CloudRedis
+from lib.cloudmongo import CloudMongo
+from lib.clouddb import CloudDB
 
 def before_scenario(context, scenario):
     scenario.current_user = None
@@ -14,7 +16,7 @@ def before_scenario(context, scenario):
     scenario.users = []
     scenario.instances = []
     scenario.deleted_instances = []
-    scenario.appids = []
+    scenario.bids = []
 
 def after_scenario(context, scenario):
     for inst in scenario.instances:
@@ -29,7 +31,13 @@ def after_scenario(context, scenario):
     del scenario.instances
     del scenario.current_user
     del scenario.current_instance
-    del scenario.appids
+    cloud_db = CloudDB()
+    cloud_mongo = CloudMongo()
+    for bid in scenario.bids:
+        tenant_id = cloud_db.get_tenant_id_by_bid(bid)
+        cloud_mongo.remove_config_by_tenant_id(tenant_id)
+
+    del scenario.bids
     del scenario.deleted_instance
     params = {"operation": "test.unset.params", "param": "all"}
     common.run_request(context.mock_server, "POST", params)

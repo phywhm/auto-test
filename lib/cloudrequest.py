@@ -50,7 +50,7 @@ class CloudStatus(object):
         self.waiting = False
         self.instance = False
         self.release = None
-        self.status = INSTANCE_NOT_REQUEST
+        self.status = INSTANCE_SUCCESS_REQUEST
 
 
 class CloudRequest(object):
@@ -436,6 +436,7 @@ class CloudRequest(object):
             self.get_cid(kargs['pkgname'])
             self.websocket_connect(auto_confirm, ping)
             self.get_instance(kargs)
+            self.cloud_status.status = INSTANCE_SUCCESS_REQUEST
             end_time = datetime.now()
             self.cloud_timer.add_action_timer(ActionTimer('all_request', self.start_time, end_time))
         except Exception as e:

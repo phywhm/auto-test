@@ -5,6 +5,11 @@ from lib.clouddb import CloudDB
 from behave import *
 from hamcrest import *
 import time
+from lib import xtestlogger
+import json
+
+logger = xtestlogger.get_logger(__name__)
+
 
 _MSG_TYPES = {"kicked": 2, "waiting": 1, "confirm": 6, "refreshstoken": 11, "error": 3, "timeover": 4, "resolution": 12, "apply": 9, "ready": 10, "address": 5, "changeResolution": 12}
 
@@ -122,3 +127,40 @@ def step_impl(context, type, whether,receive, message_type ):
                 assert_that(1, equal_to(0))
             else:
                 assert_that(1, equal_to(1))
+
+
+@step(u'(?P<index>这个|最后一个|)请求的"(?P<message_type>.*)"消息中(?P<whether>不)?应该包含"(?P<key>.*)"字段')
+def step_impl(context, index, message_type, whether, key):
+    if index == "这个":
+        messages = context.scenario.current_instance.messages
+    else:
+        messages = context.scenario.instances[-1].messages
+    tmp_msg = None
+    for message in messages:
+        if message['operation'] == _MSG_TYPES[message_type]:
+            tmp_msg = message
+            break
+
+    tmp_msg = tmp_msg['data']
+    if whether is None:
+        assert_that(tmp_msg, has_key(key))
+    else:
+        assert_that(tmp_msg, is_not(has_key(key)))
+
+@step(u'(?P<index>这个|最后一个|)请求的"(?P<message_type>.*)"消息中"(?P<key>.*)"字段值应该是"(?P<value>.*)"')
+def step_impl(context, index, message_type,key, value):
+    if index == "这个":
+        messages = context.scenario.current_instance.messages
+    else:
+        messages = context.scenario.instances[-1].messages
+    tmp_msg = None
+    for message in messages:
+        if message['operation'] == _MSG_TYPES[message_type]:
+            tmp_msg = message
+            break
+
+    tmp_msg = tmp_msg['data']
+    if key in tmp_msg:
+        assert_that(tmp_msg[key], equal_to(int(value)))
+    else:
+        assert_that(False, equal_to(True))

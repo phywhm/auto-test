@@ -19,10 +19,10 @@ def step_impl(context, access_key):
     context.scenario.users.append(context.scenario.current_user)
     context.scenario.order_id = cloud_db.get_order_by_accesskey(access_key)
 
-    if access_key not in context.scenario.appids:
+    if access_key not in context.scenario.bids:
         cloud_db.set_concurrency_by_accesskey(access_key, 1000)
         cloud_redis.set_value("cloudservice-count-" + context.scenario.order_id, "500")
-        context.scenario.appids.append(access_key)
+        context.scenario.bids.append(access_key)
         time.sleep(2)
 
 

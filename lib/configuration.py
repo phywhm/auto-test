@@ -79,6 +79,13 @@ REDIS_PORT = _get_config(p, 'cloudenv', 'redis_port', "REDIS_PORT", 6379)
 REDIS_DB = _get_config(p, 'cloudenv', 'redis_db', "REDIS_DB", 0)
 REDIS_PASSWD = _get_config(p, 'cloudenv', 'redis_passwd', "REDIS_PASSWD", "123qwe")
 
+MONGO_HOST = _get_config(p, 'cloudenv', 'redis_host', "REDIS_HOST", "172.16.2.16")
+MONGO_PORT = _get_config(p, 'cloudenv', 'redis_port', "REDIS_PORT", 27017)
+CONFIG_DB = _get_config(p, 'cloudenv', 'config_db', "CONFIG_DB", 'db_tenant_test')
+MONGO_USER = _get_config(p, 'cloudenv', 'mongo_user', "MONGO_USER", "admin")
+MONGO_PASSWORD = _get_config(p, 'cloudenv', 'mongo_password', "MONGO_PASSWORD", "123qwe")
+
+
 
 USE_CTOKEN_BACKDOOR = _get_config(p, 'cloudenv', 'use_ctoken_backdoor', "USE_CTOKEN_BACKDOOR", 1)
 PROTOCOL_VERSION = _get_config(p, 'cloudenv', 'protocol_version', "PROTOCOL_VERSION", "1.1")

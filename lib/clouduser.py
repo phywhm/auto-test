@@ -28,9 +28,9 @@ class CloudUser(object):
         if status is None:
             cloud_request.start_instance(kargs)
         elif status == "Created":
-            cloud_request.start_instance(kargs['pkgname'])
+            cloud_request.get_cid(kargs['pkgname'])
         elif status == "Linked":
-            cloud_request.start_instance(kargs['pkgname'])
+            cloud_request.get_cid(kargs['pkgname'])
             cloud_request.websocket_connect()
         else:
             pass
