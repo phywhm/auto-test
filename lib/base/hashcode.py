@@ -17,6 +17,10 @@ def hash_code(s):
         h = h + ord(c)*31**(n-1-i)
     return convert_4_bytes(h)
 
+
+def get_bucket_num(s):
+    return hash_code(s) & 15
+
 if __name__ == '__main__':
     print (hash_code('testcid1') & 15)
     print hash_code('testcid1')

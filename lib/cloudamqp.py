@@ -5,7 +5,7 @@ import random
 import pika
 import configuration as CONFIG
 from base.cloud_message import CloudMessage
-from lib.base.msg_carrier import SingleMsg, GroupMsg
+from lib.base.msg_carrier import SingleMsg, GroupMsg, KickClient, AllocGroup
 
 
 class CloudAMQP(object):
@@ -154,7 +154,9 @@ class CloudAMQP(object):
 
     __mcRoutingKeys = {
         "singMsg": "com.haima.cloudplayer.msgcenter.domain.message.MsgCarrier",
-        "groupMsg": "com.haima.cloudplayer.msgcenter.domain.message.GroupMsgCarrier"
+        "groupMsg": "com.haima.cloudplayer.msgcenter.domain.message.GroupMsgCarrier",
+        "kick": "com.haima.cloudplayer.msgcenter.domain.client.ClientKickCarrier",
+        "alloc": "com.haima.cloudplayer.msgcenter.domain.message.AllocGroupCarrier"
     }
 
     def push_single_msg(self, cid, msg):
@@ -175,6 +177,24 @@ class CloudAMQP(object):
         channel.basic_publish(exchange=self.__mcExchanges["about_msg"], routing_key=self.__mcRoutingKeys["groupMsg"], body=str(body), properties=mq_property)
         channel.close()
 
+    def kick_client(self, cid):
+        mq_property = pika.BasicProperties(
+            headers={'messageType': self.__mcRoutingKeys["kick"]})
+        mq_property.correlation_id = "kick_client_" + str(random.uniform(10000, 1000000))
+        body = KickClient(cid)
+        channel = self.amqp_conn.channel()
+        channel.basic_publish(exchange=self.__mcExchanges["client"], routing_key=self.__mcRoutingKeys["kick"], body=str(body), properties=mq_property)
+        channel.close()
+
+    def alloc_group(self, cid, group_list):
+        mq_property = pika.BasicProperties(
+            headers={'messageType': self.__mcRoutingKeys["alloc"]})
+        mq_property.correlation_id = "alloc_group_" + str(random.uniform(10000, 1000000))
+        body = AllocGroup(cid, group_list)
+        channel = self.amqp_conn.channel()
+        channel.basic_publish(exchange=self.__mcExchanges["about_msg"], routing_key=self.__mcRoutingKeys["alloc"], body=str(body), properties=mq_property)
+        channel.close()
+
 
 class CidEvent(object):
     __slots__ = ('cid', 'event')
@@ -182,8 +202,6 @@ class CidEvent(object):
     def __init__(self, cid, event):
         self.cid = cid
         self.event = event
-
-
 
     def __str__(self):
         class_path = "com.haima.cloudplayer.servicecore.domain.cloudservice."

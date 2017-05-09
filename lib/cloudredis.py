@@ -5,6 +5,7 @@ import os
 from constants import *
 import redis
 import configuration as CONFIG
+from lib.base.hashcode import hash_code, get_bucket_num
 
 
 class CloudRedis(object):
@@ -27,7 +28,6 @@ class CloudRedis(object):
 
     def delete_wait_time_key(self):
         self.redis_conn.delete(TOTAL_WAIT_USER_DATA_KEY)
-        self.save()
 
     def get_totalwait_time(self):
         return  self.redis_conn.hget(TOTAL_WAIT_USER_DATA_KEY, TOTAL_WAIT_TIME_KEY)
@@ -63,16 +63,20 @@ class CloudRedis(object):
         self.redis_conn.set(key, value)
         self.redis_conn.save()
 
-
     def get_sort_queue(self, key):
         return self.redis_conn.zrange(key, 0, -1)
 
-
-
+    def get_link_by_cid(self, cid):
+        map_name = REDIS_CLIENT_ROUTE_PREFIX + str(get_bucket_num(cid))
+        return self.redis_conn.hget(map_name, '"%s"' % cid)
 
 if __name__ == "__main__":
-    os.environ["REDIS_HOST"] = "172.16.2.16"
     cloud_redis = CloudRedis()
+
+    name = REDIS_CLIENT_ROUTE_PREFIX + str(get_bucket_num("testcid1"))
+    print name
+    print cloud_redis.redis_conn.hget(name, '"testcid1"')
+
     #cloud_redis.set_wait_time()
     #cloud_redis.delete_keys("APP_GLOBAL_CONFIG*")
     #for key in cloud_redis.get_keys("countly_wait_start_time_*"):
@@ -80,13 +84,13 @@ if __name__ == "__main__":
     #    if cloud_redis.get_ttl(key) is not None:
     #        print key, cloud_redis.get_ttl(key)
     #cloud_redis.delete_keys("saas_access_fail_message_to_*")+
-    for key in cloud_redis.get_keys("cloudservice-queue-*"):
-        print key,cloud_redis.get_value(key)
-    for key in cloud_redis.get_keys("channel-context*"):
-        print key, cloud_redis.get_value(key)
-
-    for key in cloud_redis.get_keys("cloudservice-return-count-*"):
-        print key, cloud_redis.get_value(key)
+    # for key in cloud_redis.get_keys("cloudservice-queue-*"):
+    #     print key,cloud_redis.get_value(key)
+    # for key in cloud_redis.get_keys("channel-context*"):
+    #     print key, cloud_redis.get_value(key)
+    #
+    # for key in cloud_redis.get_keys("cloudservice-return-count-*"):
+    #     print key, cloud_redis.get_value(key)
 
         #cloud_redis.set_value("cloudservice-count-12", "244")
         #cloud_redis.delete_keys("channel-context*")

@@ -66,3 +66,5 @@ TOTAL_WAIT_USER_DATA_KEY = "countly_total_user_wait_data"
 TOTAL_WAIT_TIME_KEY = "totalWaitTime"
 TOTAL_WAIT_USERS_KEY = "totalWaitUsers"
 AVG_WAIT_TIME_KEY = "avgWaitTIme"
+
+REDIS_CLIENT_ROUTE_PREFIX = "mc_clb_"

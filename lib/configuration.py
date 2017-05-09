@@ -51,19 +51,20 @@ p = load_config_file()
 SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "docker-mgt.haima.me")       #开发环境
 #SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "172.16.2.100")        #demo
 #SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "172.16.2.169")    #支付
-#SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "saasauth-migu# .haimawan.com")  #teng dev
+#SAAS_HOST = _get_config(p, "cloudenv", 'saas_host', "SAAS_HOST", "saasauth-migu# .haimawan.com")  #teng saas
 #SAAS_HOST = "saasAuth-pre.haimawan.com"
 # SAAS_PORT = _get_config(p, "cloudenv", 'saas_port', "SAAS_PORT", "8010")
 SAAS_PORT = _get_config(p, "cloudenv", 'saas_port', "SAAS_PORT", "8070")
 
 
 
-DB_HOST = _get_config(p, "cloudenv", 'db_host', "DB_HOST", "docker-mgt.haima.me")  #testing
+DB_HOST = _get_config(p, "cloudenv", 'db_host', "DB_HOST", "docker-mgt.haima.me")  #开发环境
 DB_PORT = _get_config(p, "cloudenv", 'db_port', "DB_PORT", 3306)
-DB_USER = _get_config(p, "cloudenv", 'db_user', "DB_USER", "cloudplayer")
+DB_USER = _get_config(p, "cloudenv", 'db_user', "DB_USER", "admin")
 DB_PASSWD = _get_config(p, "cloudenv", 'db_passwd', "DB_PASSWD", "123qwe")
 TENANT_DB = _get_config(p, "cloudenv", 'tenant_db', "TENANT_DB", 'db_tenant_mgt')
 CORE_DB = _get_config(p, "cloudenv", 'tenant_db', "CORE_DB", 'db_service_core')
+MC_DB = _get_config(p, "cloudenv", 'msg_center_db', "MC_DB", 'db_msg_center')
 
 
 

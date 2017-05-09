@@ -4,6 +4,9 @@
 
 import MySQLdb
 import configuration as CONFIG
+from lib import xtestlogger
+
+logger = xtestlogger.get_logger("db")
 
 
 class CloudDB(object):
@@ -20,7 +23,6 @@ class CloudDB(object):
             self.user = user
             self.passwd = passwd
         self.cur = None
-
 
     def __connect_db(self):
         self.conn = MySQLdb.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd, charset="utf8")
@@ -71,7 +73,6 @@ class CloudDB(object):
         finally:
             self.__close()
 
-
     def get_games(self):
         result = []
         try:
@@ -85,7 +86,6 @@ class CloudDB(object):
             return result
         finally:
             self.__close()
-
 
     def get_instance_status_by_cid(self, cid):
         result = None
@@ -102,8 +102,6 @@ class CloudDB(object):
             return result
         finally:
             self.__close()
-
-
 
     def check_cid_existed(self, cid):
         try:
@@ -211,7 +209,6 @@ class CloudDB(object):
         finally:
             self.__close()
 
-
     def get_order_by_accesskey(self, access_key):
         result = None
         try:
@@ -225,7 +222,6 @@ class CloudDB(object):
             return str(result)
         finally:
             self.__close()
-
 
     def set_concurrency_by_accesskey(self, access_key, limit):
         result = None
@@ -247,6 +243,31 @@ class CloudDB(object):
         finally:
             self.__close()
 
+    def clear_msg_for_cid(self, cid):
+        try:
+            self.__connect_db()
+            self.cur = self.conn.cursor()
+            self.conn.select_db(CONFIG.MC_DB)
+            clearsql = "delete from t_msg where cid='%s'" % cid
+            result = self.cur.execute(clearsql)
+            self.conn.commit()
+            logger.info("clear msg of cid [%s] count [%d]" % (cid, result))
+        finally:
+            self.__close()
+
+    def get_last_msg_status_by_cid(self, cid):
+        try:
+            self.__connect_db()
+            self.cur = self.conn.cursor()
+            self.conn.select_db(CONFIG.MC_DB)
+            selectsql = "select status from t_msg where cid='%s' order by id DESC" % cid
+            self.cur.execute(selectsql)
+            result = self.cur.fetchone()[0]
+            logger.info("the msg of cid [%s] status [%s]" % (cid, result))
+            return result
+        finally:
+            self.__close()
+
 if __name__ == "__main__":
-    mydb =  CloudDB("172.16.2.16")
-    print mydb.set_concurrency_by_accesskey("xiamatest",100)
+    mydb = CloudDB()
+    assert mydb.get_last_msg_status_by_cid('testcid1') == 'Sent'
