@@ -236,12 +236,12 @@ ENV/
 
 # Rope project settings
 .ropeproject
-### Example user template template
-### Example user template
 
 # IntelliJ project files
 .idea
+.idea/workspace.xml
 *.iml
 out
 gen
 将删除 .idea/vcs.xml
+bhlog.txt

@@ -5,7 +5,7 @@ Feature: 测试消息中心与长连接服务
   Scenario: 长连接建立连接后注册消息中心
     Given 使用CID testcid1 连接长连接服务器
     Then 检查 testcid1 路由是否在消息中心注册成功
-    Then 清除CID testcid1 的所有消息
+#    Then 清除CID testcid1 的所有消息
     Then 推送单播消息 tmsg 给 testcid1 客户端
     When 当 testcid1 客户端收到消息 tmsg
     Then 检查数据库中 testcid1 的消息状态是否为 Sent

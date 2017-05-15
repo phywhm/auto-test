@@ -31,19 +31,21 @@ def step_impl(context, cid):
     assert_that(link, starts_with('link'), "link route is %s" % link)
     assert_that(len(link), less_than_or_equal_to(6), "link route is %s and length > 6" % link)
     assert_that(len(link), greater_than_or_equal_to(5), "link route is %s and length < 5" % link)
+    time.sleep(1)
 
 
 @Then(u"清除CID {cid} 的所有消息")
 def step_impl(context, cid):
     db = CloudDB()
     db.clear_msg_for_cid(cid)
-    time.sleep(2)
+    time.sleep(1)
 
 
 @Then(u"推送单播消息 {msg} 给 {cid} 客户端")
 def step_impl(context, msg, cid):
     mq_client = CloudAMQP()
     mq_client.push_single_msg(cid, msg)
+    time.sleep(1)
 
 
 @When(u"当 {cid} 客户端收到消息 {msg}")
@@ -69,11 +71,11 @@ def step_impl(context, cid, sts):
 @Then(u"{cid} 客户端主动断开长连接")
 def step_impl(context, cid):
     context.link[cid].disconnected()
+    time.sleep(2)
 
 
 @Then(u"检查 {cid} 路由是否在消息中心注销成功")
 def step_impl(context, cid):
-    time.sleep(2)
     redis = CloudRedis()
     link = redis.get_link_by_cid(cid)
     logger.info("cid %s link route is %s and it should be None" % (cid, link))
@@ -98,3 +100,4 @@ def step_impl(context, cid, group_list):
 def step_impl(context, msg, group_list):
     mq_client = CloudAMQP()
     mq_client.push_group_msg(group_list, msg)
+    time.sleep(1)
