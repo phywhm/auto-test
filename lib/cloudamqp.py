@@ -192,7 +192,7 @@ class CloudAMQP(object):
         mq_property.correlation_id = "alloc_group_" + str(random.uniform(10000, 1000000))
         body = AllocGroup(cid, group_list)
         channel = self.amqp_conn.channel()
-        channel.basic_publish(exchange=self.__mcExchanges["about_msg"], routing_key=self.__mcRoutingKeys["alloc"], body=str(body), properties=mq_property)
+        channel.basic_publish(exchange=self.__mcExchanges["client"], routing_key=self.__mcRoutingKeys["alloc"], body=str(body), properties=mq_property)
         channel.close()
 
 

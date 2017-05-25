@@ -89,14 +89,14 @@ def step_impl(context, cid):
     time.sleep(1)
 
 
-@Then("alloc cid {cid} group {group_list}")
+@Then(u"将 {cid} 调整分组至 {group_list}")
 def step_impl(context, cid, group_list):
     mq = CloudAMQP()
+    mq.alloc_group(cid, group_list)
+    time.sleep(1)
 
-    pass
 
-
-@Then("push group msg {msg} to group {group_list}")
+@Step(u"推送组消息 {msg} 至 {group_list}")
 def step_impl(context, msg, group_list):
     mq_client = CloudAMQP()
     mq_client.push_group_msg(group_list, msg)

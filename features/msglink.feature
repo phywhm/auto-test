@@ -27,8 +27,13 @@ Feature: 测试消息中心与长连接服务
   Scenario: 客户端分组并推送组消息 1
     Given 使用CID testcid1 连接长连接服务器
     Then 检查 testcid1 路由是否在消息中心注册成功
-    Then alloc cid testcid1 group ["g1", "g2", "g3"]
-    Then push group msg gmsp to group ["g1"]
-    Then push group msg gmsp to group ["g1", "g5"]
+    Then 将 testcid1 调整分组至 ["g1", "g2", "g3"]
+    Then 推送组消息 gmsg1 至 ["g1"]
+    And 推送组消息 gmsg2 至 ["g1", "g2"]
+    And 推送组消息 gmsg3 至 ["g1", "g2", "g3"]
+    And 推送组消息 gmsg4 至 ["g1", "g5"]
+    When 当 testcid1 客户端收到消息 gmsg3
+    And 当 testcid1 客户端收到消息 gmsg1
+    And 当 testcid1 客户端收到消息 gmsg2
     Then testcid1 客户端主动断开长连接
     Then 检查 testcid1 路由是否在消息中心注销成功
