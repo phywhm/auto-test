@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-
 import threading
 import time
 
-from constants import *
-import xtestlogger
-from websocket import create_connection
 from websocket import WebSocketTimeoutException, WebSocketConnectionClosedException
+from websocket import create_connection
+
+import xtestlogger
+from constants import *
 
 logger = xtestlogger.get_logger("link")
 
@@ -44,6 +44,7 @@ class LinkRequest(object):
     def websocket_connect(self, auto_confirm=True, ping=True):
         url = "ws://docker-mgt.haima.me:7099/websocket?cid=%s&uid=%s&did=%s&sign=%s" \
               % (self.cid, 'testuidp', self.did, self.sign)
+        logger.info("current url is [%s]" % url)
         t3 = threading.Thread(target=self.__create_connection, args=(url,))
         t3.setDaemon(False)
         t3.start()
@@ -79,7 +80,7 @@ class LinkRequest(object):
                         self.socket.ping()
                 try:
                     data = self.socket.recv()
-                    self.ctx.recv.append(data)
+                    self.ctx.recv[self.cid].append(data)
                 except WebSocketTimeoutException:
                     continue
                 logger.info("cid-{cid} {data}".format(cid=self.cid, data=data))

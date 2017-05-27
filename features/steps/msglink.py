@@ -14,11 +14,21 @@ from lib.linkrequest import LinkRequest
 logger = xtestlogger.get_logger("msg_link")
 
 
+def isset(v):
+    try:
+        type(eval(v))
+    except all:
+        return 0
+    else:
+        return 1
+
+
 @Given(u"使用CID {cid} 连接长连接服务器")
 def step_impl(context, cid):
-    context.recv = []
-    context.link = {cid: LinkRequest(cid, context)}
-    context.link[cid].websocket_connect()
+    scenario = context.scenario
+    scenario.recv[cid] = []
+    scenario.link[cid] = LinkRequest(cid, scenario)
+    scenario.link[cid].websocket_connect()
     time.sleep(1)
 
 
@@ -50,15 +60,16 @@ def step_impl(context, msg, cid):
 
 @When(u"当 {cid} 客户端收到消息 {msg}")
 def step_impl(context, cid, msg):
+    scenario = context.scenario
     for i in range(10):
-        if context.recv and len(context.recv) > 0:
-            tmp = context.recv.pop()
+        if scenario.recv[cid] and len(scenario.recv[cid]) > 0:
+            tmp = scenario.recv[cid].pop()
             assert_that(tmp, msg, "context %s" % tmp)
             break
         else:
             time.sleep(0.5)
             if i == 9:
-                assert_that(1, equal_to(0), "context %s" % context.recv)
+                assert_that(1, equal_to(0), "context %s" % scenario.recv[cid])
 
 
 @Then(u"检查数据库中 {cid} 的消息状态是否为 {sts}")
@@ -70,7 +81,8 @@ def step_impl(context, cid, sts):
 
 @Then(u"{cid} 客户端主动断开长连接")
 def step_impl(context, cid):
-    context.link[cid].disconnected()
+    scenario = context.scenario
+    scenario.link[cid].disconnected()
     time.sleep(2)
 
 
@@ -101,3 +113,6 @@ def step_impl(context, msg, group_list):
     mq_client = CloudAMQP()
     mq_client.push_group_msg(group_list, msg)
     time.sleep(1)
+
+if __name__ == '__main__':
+    pass

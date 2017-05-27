@@ -17,6 +17,8 @@ def before_scenario(context, scenario):
     scenario.instances = []
     scenario.deleted_instances = []
     scenario.bids = []
+    scenario.recv = {}
+    scenario.link = {}
 
 def after_scenario(context, scenario):
     for inst in scenario.instances:
