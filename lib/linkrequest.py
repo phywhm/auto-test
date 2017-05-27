@@ -44,7 +44,6 @@ class LinkRequest(object):
     def websocket_connect(self, auto_confirm=True, ping=True):
         url = "ws://docker-mgt.haima.me:7099/websocket?cid=%s&uid=%s&did=%s&sign=%s" \
               % (self.cid, 'testuidp', self.did, self.sign)
-        logger.info("current url is [%s]" % url)
         t3 = threading.Thread(target=self.__create_connection, args=(url,))
         t3.setDaemon(False)
         t3.start()
