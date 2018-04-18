@@ -5,7 +5,7 @@ import random
 import pika
 import configuration as CONFIG
 from base.cloud_message import CloudMessage
-from lib.base.msg_carrier import SingleMsg, GroupMsg, KickClient, AllocGroup
+from lib.base.msg_carrier import SingleMsg, GroupMsg, KickClient, AllocGroup, Event
 
 
 class CloudAMQP(object):
@@ -31,7 +31,6 @@ class CloudAMQP(object):
         print 'Requeued %i messages' % requeued_messages
         channel.close()
 
-
     def fire_event(self, cid, event):
         test = CidEvent(cid, event)
         mq_property = pika.BasicProperties(headers={'messageType': 'com.haima.cloudplayer.servicecore.domain.cloudservice.StateEventCarrier'})
@@ -42,7 +41,6 @@ class CloudAMQP(object):
                               body=str(test),
                               properties=mq_property)
         channel.close()
-
 
     def send_msg_access(self, msg):
         channel = self.amqp_conn.channel()
@@ -195,6 +193,25 @@ class CloudAMQP(object):
         channel.basic_publish(exchange=self.__mcExchanges["client"], routing_key=self.__mcRoutingKeys["alloc"], body=str(body), properties=mq_property)
         channel.close()
 
+    def dispatch_event(self, cid):
+        mq_property = pika.BasicProperties(
+            headers={'messageType': 'com.haima.cloudplayer.servicecore.domain.cloudservice.StateEventCarrier'})
+        mq_property.correlation_id = "dispatch_event_" + str(random.uniform(10000, 1000000))
+        body = Event(cid)
+        channel = self.amqp_conn.channel()
+        channel.basic_publish(exchange='exchange.cloudservice.channel.statemachine', routing_key='com.haima.cloudplayer.servicecore.domain.cloudservice.StateEventCarrier',
+                              body=str(body), properties=mq_property)
+        channel.close()
+
+    def lock_user_game(self):
+        mq_property = pika.BasicProperties(
+            headers={'messageType': 'com.haima.cloudplayer.valueadded.domain.LockUserRequest'})
+        mq_property.correlation_id = "lock_msg_" + str(random.uniform(10000, 1000000))
+        channel = self.amqp_conn.channel()
+        body_str = '{"@type":"com.haima.cloudplayer.valueadded.domain.LockUserRequest", "uid":"phytestuid", "productId":"32879"}'
+        channel.basic_publish(exchange='exchange.valueadded', routing_key='com.haima.cloudplayer.valueadded.domain.LockUserRequest', body=body_str, properties=mq_property)
+        channel.close()
+
 
 class CidEvent(object):
     __slots__ = ('cid', 'event')
@@ -211,6 +228,5 @@ class CidEvent(object):
                %(class_name, self.cid, event_class_name, self.event)
 
 if __name__ == "__main__":
-    cloud_mq = CloudAMQP()
-
-    cloud_mq.fire_event("24", "AccessLinkSuccess")
+    cloud_mq = CloudAMQP('service-core.stable.haima001.com', 5672, 'fc', 'admin')
+    cloud_mq.lock_user_game()

@@ -67,18 +67,26 @@ CORE_DB = _get_config(p, "cloudenv", 'tenant_db', "CORE_DB", 'db_service_core')
 MC_DB = _get_config(p, "cloudenv", 'msg_center_db', "MC_DB", 'db_msg_center')
 
 
-
+#
+# AMQP_USER = _get_config(p, 'cloudenv', 'amqp_user', "AMQP_USER", "admin")
+# AMQP_PASSWD = _get_config(p, 'cloudenv', 'amqp_passwd', "AMQP_PASSWD", "admin")
+# AMQP_HOST = _get_config(p, 'cloudenv', 'amqp_host', "AMQP_HOST", "docker-mgt.haima.me")
+# AMQP_PORT = _get_config(p, 'cloudenv', 'amqp_port', "AMQP_PORT", 5672)
+# VIRTUAL_HOST = _get_config(p, 'cloudenv', 'virtual_host', "VIRTUAL_HOST", "/")
 AMQP_USER = _get_config(p, 'cloudenv', 'amqp_user', "AMQP_USER", "admin")
-AMQP_PASSWD = _get_config(p, 'cloudenv', 'amqp_passwd', "AMQP_PASSWD", "admin")
-AMQP_HOST = _get_config(p, 'cloudenv', 'amqp_host', "AMQP_HOST", "docker-mgt.haima.me")
+AMQP_PASSWD = _get_config(p, 'cloudenv', 'amqp_passwd', "AMQP_PASSWD", "HaimaRabbBit81")
+AMQP_HOST = _get_config(p, 'cloudenv', 'amqp_host', "AMQP_HOST", "service-core.stable.haima001.com")
 AMQP_PORT = _get_config(p, 'cloudenv', 'amqp_port', "AMQP_PORT", 5672)
-VIRTUAL_HOST = _get_config(p, 'cloudenv', 'virtual_host', "VIRTUAL_HOST", "/")
+VIRTUAL_HOST = _get_config(p, 'cloudenv', 'virtual_host', "VIRTUAL_HOST", "fc")
 
 
-REDIS_HOST = _get_config(p, 'cloudenv', 'redis_host', "REDIS_HOST", "docker-mgt.haima.me")
+REDIS_HOST = _get_config(p, 'cloudenv', 'redis_host', "REDIS_HOST", "123.206.46.217")
+# REDIS_HOST = _get_config(p, 'cloudenv', 'redis_host', "REDIS_HOST", "docker-mgt.haima.me")
 REDIS_PORT = _get_config(p, 'cloudenv', 'redis_port', "REDIS_PORT", 6379)
 REDIS_DB = _get_config(p, 'cloudenv', 'redis_db', "REDIS_DB", 0)
-REDIS_PASSWD = _get_config(p, 'cloudenv', 'redis_passwd', "REDIS_PASSWD", "123qwe")
+# REDIS_DB = _get_config(p, 'cloudenv', 'redis_db', "REDIS_DB", 0)
+REDIS_PASSWD = _get_config(p, 'cloudenv', 'redis_passwd', "REDIS_PASSWD", "redispass")
+# REDIS_PASSWD = _get_config(p, 'cloudenv', 'redis_passwd', "REDIS_PASSWD", "123qwe")
 
 MONGO_HOST = _get_config(p, 'cloudenv', 'redis_host', "REDIS_HOST", "172.16.2.16")
 MONGO_PORT = _get_config(p, 'cloudenv', 'redis_port', "REDIS_PORT", 27017)

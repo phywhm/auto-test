@@ -97,7 +97,8 @@ def step_impl(context, cid):
 @Then(u"踢出CID为 {cid} 的用户")
 def step_impl(context, cid):
     mq = CloudAMQP()
-    mq.kick_client(cid)
+    # mq.kick_client(cid)
+    mq.dispatch_event(cid)
     time.sleep(1)
 
 

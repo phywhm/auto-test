@@ -49,6 +49,17 @@ class KickClient(object):
         return '{"@type":"%s", "cid":"%s"}' % (class_name, self.cid)
 
 
+class Event(object):
+    __slots__ = ('cid',)
+
+    def __init__(self, cid):
+        self.cid = cid
+
+    def __str__(self):
+        class_name = "com.haima.cloudplayer.servicecore.domain.cloudservice.StateEventCarrier"
+        return '{"@type":"%s", "cid":"%d", "event":{"eventType":"CloudUserExit"}}' % (class_name, 50165083)
+
+
 if __name__ == '__main__':
     gmsg = GroupMsg(["g1", "g2", "g3"], "gmsg")
     print str(gmsg)
