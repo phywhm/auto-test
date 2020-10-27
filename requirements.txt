@@ -1,7 +1,7 @@
 behave==1.2.5
 boto==2.38.0
 chardet==2.3.0
-cryptography==1.2.3
+cryptography==3.2
 enum34==1.1.2
 greenlet==0.4.9
 idna==2.0
